@@ -3,7 +3,6 @@ from discord import app_commands
 import random
 import re
 
-
 class Dice:
 
     def do(s):
@@ -144,63 +143,51 @@ class Dice:
             j=i
         return c
 
-with open("config.txt",mode="r",encoding="utf-8") as f:
-    token=f.readline().split(":")
-    token=token[1]
-    status=f.readline().split(":")[1]
+# with open("config.txt",mode="r",encoding="utf-8") as f:
+#     token=f.readline().split(":")
+#     token=token[1]
+#     status=f.readline().split(":")[1]
 
-intents = discord.Intents.default()
-client = discord.Client(intents=intents)
-tree = app_commands.CommandTree(client)
+# intents = discord.Intents.default()
+# client = discord.Client(intents=intents)
+# tree = app_commands.CommandTree(client)
 
-#起動
-@client.event
-async def on_ready():
-    # アクティビティを設定
-    new_activity = status
-    await client.change_presence(activity=discord.Game(new_activity))
-    # スラッシュコマンドを同期
-    await tree.sync()
+# #起動
+# @client.event
+# async def on_ready():
+#     # アクティビティを設定
+#     new_activity = status
+#     await client.change_presence(activity=discord.Game(new_activity))
+#     # スラッシュコマンドを同期
+#     await tree.sync()
 
-@client.event
-async def on_voice_state_update(member, before, after):
-    if before.channel == after.channel:
-        return
-    if not member == None:
-        if after.channel==None:
-            await before.channel.send(member.display_name+"("+member.name+"が"+before.channel.name+"から退出しました")
-        else:
-            await after.channel.send(member.display_name+"("+member.name+"が"+after.channel.name+"に入室しました")
+# @client.event
+# async def on_voice_state_update(member, before, after):
+#     if before.channel == after.channel:
+#         return
+#     if not member == None:
+#         if after.channel==None:
+#             await before.channel.send(member.display_name+"("+member.name+"が"+before.channel.name+"から退出しました")
+#         else:
+#             await after.channel.send(member.display_name+"("+member.name+"が"+after.channel.name+"に入室しました")
 
-@tree.command(name='r', description='ダイスを振るよ')
-@app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
-async def test(interaction: discord.Interaction,input_dice:str):
-    rs=Dice.do(input_dice)
-    if rs==False:
-        await interaction.response.send_message('入力がおかしいよ')
-        return
-    rs="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(rs)
-    await interaction.response.send_message(rs)
-
-@tree.command(name='rs', description='シークレットダイスを振るよ')
-@app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
-async def test(interaction: discord.Interaction,input_dice:str,):
-    rs=Dice.do(input_dice)
-    if rs==False:
-        await interaction.response.send_message('入力がおかしいよ')
-        return
-    rs="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(rs)
-    await interaction.response.send_message(rs,ephemeral=True)
-
-client.run(token)
-
-# while True:
-#     text=input("ダイスを振るよ:")
+# @tree.command(name='r', description='ダイスを振るよ') 
+# async def test(interaction: discord.Interaction,text:str):
 #     rs=Dice.do(text)
-#     rs=(text+"="+" **"+str(rs[1])+"** "+"(="+rs[0]+")")
+#     if rs==False:
+#         await interaction.response.send_message('入力がおかしいよ')
+#         return
+#     rs="# "+str(rs[1])+"\n``"+text+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
 #     print(rs)
+#     await interaction.response.send_message(rs)
+
+# client.run(token)
+
+while True:
+    text=input("ダイスを振るよ:")
+    rs=Dice.do(text)
+    rs=(text+"="+" **"+str(rs[1])+"** "+"(="+rs[0]+")")
+    print(rs)
 
 
 
