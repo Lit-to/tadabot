@@ -180,7 +180,7 @@ async def test(interaction: discord.Interaction,input_dice:str):
         await interaction.response.send_message('入力がおかしいよ')
         return
     rs="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(rs)
+    print(interaction.user.name,"did \"/r\":",rs)
     await interaction.response.send_message(rs)
 
 @tree.command(name='rs', description='シークレットダイスを振るよ')
@@ -191,7 +191,7 @@ async def test(interaction: discord.Interaction,input_dice:str,):
         await interaction.response.send_message('入力がおかしいよ')
         return
     rs="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(rs)
+    print(interaction.user.name,"did \"/rs\":",rs)
     await interaction.response.send_message(rs,ephemeral=True)
 
 client.run(token)
