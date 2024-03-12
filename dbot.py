@@ -179,9 +179,9 @@ async def test(interaction: discord.Interaction,input_dice:str):
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
-    rs="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(interaction.user.name,"did \"/r\":",rs)
-    await interaction.response.send_message(rs)
+    rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
+    print(interaction.user.name,"did \"/r\":",*rs)
+    await interaction.response.send_message(rd)
 
 @tree.command(name='rs', description='シークレットダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
@@ -190,9 +190,9 @@ async def test(interaction: discord.Interaction,input_dice:str,):
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
-    rs="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(interaction.user.name,"did \"/rs\":",rs)
-    await interaction.response.send_message(rs,ephemeral=True)
+    rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
+    print(interaction.user.name,"did \"/rs\":",*rs)
+    await interaction.response.send_message(rd,ephemeral=True)
 
 client.run(token)
 
