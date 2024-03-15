@@ -167,9 +167,9 @@ async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
         return
     if not member == None:
-        if after.channel==None:
+        if before.channel!=None:
             await before.channel.send(member.display_name+"("+member.name+"が"+before.channel.name+"から退出しました")
-        else:
+        if after.channel!=None:
             await after.channel.send(member.display_name+"("+member.name+"が"+after.channel.name+"に入室しました")
 
 @tree.command(name='r', description='ダイスを振るよ')
@@ -193,6 +193,12 @@ async def test(interaction: discord.Interaction,input_dice:str,):
     rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
     print(interaction.user.name,"did \"/rs\":",*rs)
     await interaction.response.send_message(rd,ephemeral=True)
+
+@tree.command(name='lit', description='(り・と・)って言うよ')
+# @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
+async def test(interaction: discord.Interaction):
+    await interaction.response.send_message("(り・と・)っ")
+
 
 client.run(token)
 
