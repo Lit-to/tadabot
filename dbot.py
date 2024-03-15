@@ -205,10 +205,22 @@ async def test(interaction: discord.Interaction):
 async def test(interaction: discord.Interaction,count:int,):
     print(interaction.user.name,"did \"/lits\":",count)
     if int(count)<2:
-        await interaction.response.send_message('2以上じゃないと動かないよ')
+        await interaction.response.send_message('2以上じゃないと動かないよ',ephemeral=True)
         return
     else:
         await interaction.response.send_message("(り・と・)っ"*count,ephemeral=True)
+
+@tree.command(name='choice', description='自分と同じ通話に居る人から一人メンションするよ')
+# @app_commands.describe(count="通話に居てね")
+async def test(interaction: discord.Interaction):
+    print(interaction.user.name,"did \"/choice\":")
+    if interaction.user.voice==None:
+        await interaction.response.send_message('通話に居てね')
+        return
+    else:
+        v=interaction.user.voice.channel.members
+        r=random.choice(v)
+        await interaction.response.send_message(r.display_name+"("+r.global_name+")")
 
 
 client.run(token)

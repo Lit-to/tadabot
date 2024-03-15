@@ -3,6 +3,7 @@ from discord import app_commands
 import random
 import re
 
+
 class Dice:
 
     def do(s):
@@ -143,6 +144,8 @@ class Dice:
             j=i
         return c
 
+
+
 # with open("config.txt",mode="r",encoding="utf-8") as f:
 #     token=f.readline().split(":")
 #     token=token[1]
@@ -166,20 +169,49 @@ class Dice:
 #     if before.channel == after.channel:
 #         return
 #     if not member == None:
-#         if after.channel==None:
+#         if before.channel!=None:
 #             await before.channel.send(member.display_name+"("+member.name+"が"+before.channel.name+"から退出しました")
-#         else:
+#         if after.channel!=None:
 #             await after.channel.send(member.display_name+"("+member.name+"が"+after.channel.name+"に入室しました")
 
-# @tree.command(name='r', description='ダイスを振るよ') 
-# async def test(interaction: discord.Interaction,text:str):
-#     rs=Dice.do(text)
+# @tree.command(name='r', description='ダイスを振るよ')
+# @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
+# async def test(interaction: discord.Interaction,input_dice:str):
+#     rs=Dice.do(input_dice)
 #     if rs==False:
 #         await interaction.response.send_message('入力がおかしいよ')
 #         return
-#     rs="# "+str(rs[1])+"\n``"+text+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-#     print(rs)
-#     await interaction.response.send_message(rs)
+#     rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
+#     print(interaction.user.name,"did \"/r\":",*rs)
+#     await interaction.response.send_message(rd)
+
+# @tree.command(name='rs', description='シークレットダイスを振るよ')
+# @app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
+# async def test(interaction: discord.Interaction,input_dice:str,):
+#     rs=Dice.do(input_dice)
+#     if rs==False:
+#         await interaction.response.send_message('入力がおかしいよ')
+#         return
+#     rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
+#     print(interaction.user.name,"did \"/rs\":",*rs)
+#     await interaction.response.send_message(rd,ephemeral=True)
+
+# @tree.command(name='lit', description='(り・と・)って言うよ')
+# # @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
+# async def test(interaction: discord.Interaction):
+#     print(interaction.user.name,"did \"/lit\":")
+#     await interaction.response.send_message("(り・と・)っ")
+
+# @tree.command(name='lits', description='指定回数(り・と・)って言うよ、自分にしか見えないよ')
+# @app_commands.describe(count="2以上じゃないと動かないよ")
+# async def test(interaction: discord.Interaction,count:int,):
+#     print(interaction.user.name,"did \"/lits\":",count)
+#     if int(count)<2:
+#         await interaction.response.send_message('2以上じゃないと動かないよ')
+#         return
+#     else:
+#         await interaction.response.send_message("(り・と・)っ"*count,ephemeral=True)
+
 
 # client.run(token)
 
