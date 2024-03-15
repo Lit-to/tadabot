@@ -197,7 +197,18 @@ async def test(interaction: discord.Interaction,input_dice:str,):
 @tree.command(name='lit', description='(り・と・)って言うよ')
 # @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction):
+    print(interaction.user.name,"did \"/lit\":")
     await interaction.response.send_message("(り・と・)っ")
+
+@tree.command(name='lits', description='指定回数(り・と・)って言うよ、自分にしか見えないよ')
+@app_commands.describe(count="2以上じゃないと動かないよ")
+async def test(interaction: discord.Interaction,count:int,):
+    print(interaction.user.name,"did \"/lits\":",count)
+    if int(count)<2:
+        await interaction.response.send_message('2以上じゃないと動かないよ')
+        return
+    else:
+        await interaction.response.send_message("(り・と・)っ"*count,ephemeral=True)
 
 
 client.run(token)
