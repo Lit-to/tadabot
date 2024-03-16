@@ -219,8 +219,12 @@ async def test(interaction: discord.Interaction):
         return
     else:
         v=interaction.user.voice.channel.members
-        r=random.choice(v)
-        await interaction.response.send_message(r.display_name+"("+r.global_name+")")
+        rl=list()
+        for i in v:
+            if i.bot==False:
+                rl.append(i)
+        r=random.choice(rl)
+        await interaction.response.send_message(r.display_name+"("+r.name+")")
 
 
 client.run(token)
