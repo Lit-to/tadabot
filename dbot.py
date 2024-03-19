@@ -147,7 +147,7 @@ class Dice:
 with open("config.txt",mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
     token=token[1]
-    status=f.readline().split(":")[1]
+    status_message=f.readline().split(":")[1]
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -157,7 +157,7 @@ tree = app_commands.CommandTree(client)
 @client.event
 async def on_ready():
     # アクティビティを設定
-    new_activity = status
+    new_activity = status_message
     await client.change_presence(activity=discord.Game(new_activity))
     # スラッシュコマンドを同期
     await tree.sync()
@@ -202,7 +202,7 @@ async def test(interaction: discord.Interaction):
 
 @tree.command(name='lits', description='指定回数(り・と・)って言うよ、自分にしか見えないよ')
 @app_commands.describe(count="2以上じゃないと動かないよ")
-async def test(interaction: discord.Interaction,count:int,):
+async def test(interaction: discord.Interaction,count:int):
     print(interaction.user.name,"did \"/lits\":",count)
     if int(count)<2:
         await interaction.response.send_message('2以上じゃないと動かないよ',ephemeral=True)
@@ -230,8 +230,35 @@ async def test(interaction: discord.Interaction):
 @app_commands.describe(st="変更内容")
 async def notice(interaction: discord.Interaction,st:str):
     print(interaction.user.name,"did \"/status\":")
+    global status_message
+    status_message=st
     await client.change_presence(activity=discord.Game(st))
     await interaction.response.send_message(st+"に変更しました")
+
+@tree.command(name='online', description='オンライン設定します')
+@app_commands.describe(st="変更内容0:オンライン 1:退席中 2:取り込み中 3:オフライン")
+async def notice(interaction: discord.Interaction,st:int):
+    print(interaction.user.name,"did \"/online\":"+str(st))
+    if st<0 or 3<st:
+        await interaction.response.send_message('0~3の数値にしてね',ephemeral=True)
+    else:
+        if st==0 and client.status!=None:
+            await interaction.response.send_message('オンラインに変更したよ!',ephemeral=True)
+            await client.change_presence(status=discord.Status.online)
+        elif st==1 and client.status!=discord.Status.idle:
+            await interaction.response.send_message('退席中に変更したよ!',ephemeral=True)
+            await client.change_presence(status=discord.Status.idle)
+        elif st==2 and client.status!=discord.Status.dnd:
+            await interaction.response.send_message('取り込み中に変更したよ!',ephemeral=True)
+            await client.change_presence(status=discord.Status.dnd)
+        elif st==3 and client.status!=discord.Status.offline:
+            await interaction.response.send_message('オフラインに変更したよ!',ephemeral=True)
+            await client.change_presence(status=discord.Status.offline)
+        else:
+            await interaction.response.send_message('前と一緒じゃない?',ephemeral=True)
+        # await client.change_presence(activity=discord.Game(status_message))
+
+
 
 
 @tree.command(name='syo', description='ハイ')
