@@ -226,6 +226,18 @@ async def test(interaction: discord.Interaction):
         r=random.choice(rl)
         await interaction.response.send_message(r.display_name+"("+r.name+")")
 
+@tree.command(name='status', description='ステメ設定します')
+@app_commands.describe(st="変更内容")
+async def notice(interaction: discord.Interaction,st:str):
+    print(interaction.user.name,"did \"/status\":")
+    await client.change_presence(activity=discord.Game(st))
+    await interaction.response.send_message(st+"に変更しました")
+
+
+@tree.command(name='syo', description='ハイ')
+async def notice(interaction: discord.Interaction):
+    print(interaction.user.name,"did \"/syo\":")
+    await interaction.response.send_message("ハイ")
 
 client.run(token)
 
