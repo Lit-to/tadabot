@@ -2,7 +2,8 @@ import discord
 from discord import app_commands
 import random
 import re
-
+import bingo
+import datetime
 
 class Dice:
 
@@ -174,13 +175,23 @@ async def on_voice_state_update(member, before, after):
 
 @tree.command(name='r', description='ダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
-async def test(interaction: discord.Interaction,input_dice:str):
+async def test(interaction: discord.Interaction,input_dice:str="1d100"):
     rs=Dice.do(input_dice)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
     rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(interaction.user.name,"did \"/r\":",*rs)
+    print(datetime.datetime.now(),interaction.user.name,"did \"/r\":",*rs)
+    await interaction.response.send_message(rd)
+
+@tree.command(name='ohuro', description='おふろのおんどは1d100度！')
+async def test(interaction: discord.Interaction):
+    rs=Dice.do("1d100")
+    if rs==False:
+        await interaction.response.send_message('入力がおかしいよ')
+        return
+    rd="# "+str(rs[1])+"度!"
+    print(datetime.datetime.now(),interaction.user.name,"did \"/ohuro\":",*rs)
     await interaction.response.send_message(rd)
 
 @tree.command(name='rs', description='シークレットダイスを振るよ')
@@ -191,19 +202,19 @@ async def test(interaction: discord.Interaction,input_dice:str,):
         await interaction.response.send_message('入力がおかしいよ')
         return
     rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(interaction.user.name,"did \"/rs\":",*rs)
+    print(datetime.datetime.now(),interaction.user.name,"did \"/rs\":",*rs)
     await interaction.response.send_message(rd,ephemeral=True)
 
 @tree.command(name='lit', description='(り・と・)って言うよ')
 # @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction):
-    print(interaction.user.name,"did \"/lit\":")
+    print(datetime.datetime.now(),interaction.user.name,"did \"/lit\":")
     await interaction.response.send_message("(り・と・)っ")
 
 @tree.command(name='lits', description='指定回数(り・と・)って言うよ、自分にしか見えないよ')
 @app_commands.describe(count="2以上じゃないと動かないよ")
 async def test(interaction: discord.Interaction,count:int):
-    print(interaction.user.name,"did \"/lits\":",count)
+    print(datetime.datetime.now(),interaction.user.name,"did \"/lits\":",count)
     if int(count)<2:
         await interaction.response.send_message('2以上じゃないと動かないよ',ephemeral=True)
         return
@@ -213,7 +224,7 @@ async def test(interaction: discord.Interaction,count:int):
 @tree.command(name='choice', description='自分と同じ通話に居る人から一人メンションするよ')
 # @app_commands.describe(count="通話に居てね")
 async def test(interaction: discord.Interaction):
-    print(interaction.user.name,"did \"/choice\":")
+    print(datetime.datetime.now(),interaction.user.name,"did \"/choice\":")
     if interaction.user.voice==None:
         await interaction.response.send_message('通話に居てね')
         return
@@ -229,7 +240,7 @@ async def test(interaction: discord.Interaction):
 @tree.command(name='status', description='ステメ設定します')
 @app_commands.describe(st="変更内容")
 async def notice(interaction: discord.Interaction,st:str):
-    print(interaction.user.name,"did \"/status\":")
+    print(datetime.datetime.now(),interaction.user.name,"did \"/status\":")
     global status_message
     status_message=st
     await client.change_presence(activity=discord.Game(st))
@@ -244,6 +255,7 @@ async def notice(interaction: discord.Interaction,st:int):
     else:
         if st==0 and client.status!=None:
             await interaction.response.send_message('オンラインに変更したよ!',ephemeral=True)
+            # await client.change_presence(activity=discord.Game(status_message))
             await client.change_presence(status=discord.Status.online)
         elif st==1 and client.status!=discord.Status.idle:
             await interaction.response.send_message('退席中に変更したよ!',ephemeral=True)
@@ -258,13 +270,18 @@ async def notice(interaction: discord.Interaction,st:int):
             await interaction.response.send_message('前と一緒じゃない?',ephemeral=True)
         # await client.change_presence(activity=discord.Game(status_message))
 
-
-
-
 @tree.command(name='syo', description='ハイ')
 async def notice(interaction: discord.Interaction):
-    print(interaction.user.name,"did \"/syo\":")
+    print(datetime.datetime.now(),interaction.user.name,"did \"/syo\":")
     await interaction.response.send_message("ハイ")
+
+@tree.command(name='bingo', description='ビンゴカードを出すよ')
+async def notice(interaction: discord.Interaction):
+    #とりま1~100まで固定
+    bingo.bingo(1,100)
+    print(datetime.datetime.now(),interaction.user.name,"did \"/bingo\"")
+    await interaction.response.send_message(file=discord.File("work.jpg"))
+
 
 client.run(token)
 
