@@ -150,48 +150,6 @@ class Dice:
         return c
 
 
-# class Choose(discord.ui.Modal):
-#     def __init__(self):
-#         # questions=[]
-#         data,ids=nazo.open_file()
-#         questions=nazo.get_titles(data)
-#         qs=[]
-#         for i in questions:
-#             qs.append(discord.SelectOption(label=i,value=i))
-#         super().__init__(
-#             title="謎解きフォーム",
-#             timeout=None
-#         )
-        
-#         self.answer = discord.ui.Select(
-#             # label="問題を選んでね！",
-#             placeholder="問題を選択:",
-#             options=qs,
-#             max_values=1,
-#             # type=discord.ComponentType.select
-#             # required=True
-#         )
-#         # self.add_item(self.answer)
-#     async def on_submit(self, interaction: discord.Interaction) -> None:
-#         return await interaction.response.send_message("あなたが入力したものはこれですね！\n"+self.answer.value)
-
-# class Answer(discord.ui.Modal):
-    def __init__(self):
-        super().__init__(
-            title="謎解きフォーム",
-            timeout=None
-        )
-        
-        self.answer = discord.ui.TextInput(
-            label="答えを入力してね！",
-            style=discord.TextStyle.short,
-            placeholder="",
-            required=True
-        )
-        self.add_item(self.answer)
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        return await interaction.response.send_message("あなたが入力したものはこれですね！\n"+self.answer.value)
-
 class Question(discord.ui.Modal):
     def __init__(self):
         super().__init__(
@@ -222,7 +180,59 @@ class Question(discord.ui.Modal):
                 await interaction.response.send_message('不正解だよ',ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが見つかりませんでした、すまん',ephemeral=True)
-    
+
+class QuestionAdd(discord.ui.Modal):
+    def __init__(self):
+        super().__init__(
+            title="追加ふぉーーーーーむ",
+            timeout=None
+        )
+        
+        self.question = discord.ui.TextInput(
+            label="問題タイトルを入力してね！",
+            style=discord.TextStyle.short,
+            placeholder="",
+            required=True
+        )
+        self.answer = discord.ui.TextInput(
+            label="解答を入力してね！",
+            style=discord.TextStyle.short,
+            placeholder="",
+            required=True
+        )
+        self.add_item(self.question)
+        self.add_item(self.answer)
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        data,ids=nazo.open_file()
+        suc,data,ids=nazo.add_contents(self.question.value,self.answer.value,data,ids)
+        if suc:
+            nazo.write_file(data)
+            await interaction.response.send_message("**"+self.question.value+"**というタイトルの謎解きの答えを**"+self.answer.value+"**として覚えたよ！",ephemeral=True)
+        else:
+            await interaction.response.send_message('タイトルが被っています',ephemeral=True)
+
+class QuestionRemove(discord.ui.Modal):
+    def __init__(self):
+        super().__init__(
+            title="追加ふぉーーーーーむ",
+            timeout=None
+        )
+        
+        self.question = discord.ui.TextInput(
+            label="問題タイトルを入力してね！",
+            style=discord.TextStyle.short,
+            placeholder="",
+            required=True
+        )
+        self.add_item(self.question)
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+        data,ids=nazo.open_file()
+        suc,data,ids=nazo.remove_contents(self.question.value,data,ids)
+        if suc:
+            nazo.write_file(data)
+            await interaction.response.send_message("1..2の...ポカン！**"+self.question.value+"**というタイトルの謎解きの答えをきれいさっぱり忘れたよ！",ephemeral=True)
+        else:
+            await interaction.response.send_message('タイトルが見つかりませんでした、すまん',ephemeral=True)
 
 
 with open("config.txt",mode="r",encoding="utf-8") as f:
@@ -258,34 +268,34 @@ async def on_voice_state_update(member, before, after):
 ## 以下コマンド
 
 @tree.command(name='nazo', description='謎解き関連のコマンドだよ')
-@app_commands.describe(st="add / remove / check",title="タイトル",answer="答え")
-async def answer(interaction: discord.Interaction,st:str="check",title:str="",answer:str=""):
-    print(interaction.user.name,"did \"/nazo\":"+str(st))
-    if st=="add":
+@app_commands.describe(command="add / remove / check",title="タイトル",answer="答え")
+async def answer(interaction: discord.Interaction,command:str="check",title:str="",answer:str=""):
+    print(datetime.datetime.now(),interaction.user.name,"did \"/nazo\":",command,title,answer)
+    if command=="add":
         if title == "" or answer == "":
-            await interaction.response.send_message('タイトルと答えを入力してね',ephemeral=True)
+            await interaction.response.send_modal(QuestionAdd())
             return
         else:
             data,ids=nazo.open_file()
             suc,data,ids=nazo.add_contents(title,answer,data,ids)
             if suc:
                 nazo.write_file(data)
-                await interaction.response.send_message(title+" "+answer+" added",ephemeral=True)
+                await interaction.response.send_message("**"+title+"**というタイトルの謎解きの答えを**"+answer+"**として覚えたよ！",ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが被っています',ephemeral=True)
-    elif st=="remove":
+    elif command=="remove":
         if title == "":
-            await interaction.response.send_message('タイトルを入力してね',ephemeral=True)
+            await interaction.response.send_modal(QuestionRemove())
             return
         else:
             data,ids=nazo.open_file()
             suc,data,ids=nazo.remove_contents(title,data,ids)
             if suc:
                 nazo.write_file(data)
-                await interaction.response.send_message(title+" removed",ephemeral=True)
+                await interaction.response.send_message("1..2の...ポカン！**"+title+"**というタイトルの謎解きの答えをきれいさっぱり忘れたよ！",ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが見つかりませんでした、すまん',ephemeral=True)
-    elif st=="check":
+    elif command=="check":
         if title == "" or answer == "":
             await interaction.response.send_modal(Question())
             # await interaction.response.send_modal(Answer())
@@ -298,9 +308,10 @@ async def answer(interaction: discord.Interaction,st:str="check",title:str="",an
                 await interaction.response.send_message('不正解だよ',ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが見つかりませんでした、すまん',ephemeral=True)
-
-
-
+    elif command=="list":
+        data,ids=nazo.open_file()
+        titlelist=nazo.get_titles(data)
+        await interaction.response.send_message("\n".join(titlelist),ephemeral=True)
 
 
 

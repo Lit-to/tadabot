@@ -258,10 +258,10 @@ async def on_voice_state_update(member, before, after):
 ## 以下コマンド
 
 @tree.command(name='nazo', description='謎解き関連のコマンドだよ')
-@app_commands.describe(st="add / remove / check",title="タイトル",answer="答え")
-async def answer(interaction: discord.Interaction,st:str="check",title:str="",answer:str=""):
-    print(interaction.user.name,"did \"/nazo\":"+str(st))
-    if st=="add":
+@app_commands.describe(command="add / remove / check",title="タイトル",answer="答え")
+async def answer(interaction: discord.Interaction,command:str="check",title:str="",answer:str=""):
+    print(datetime.datetime.now(),interaction.user.name,"did \"/nazo\":",command,title,answer)
+    if command=="add":
         if title == "" or answer == "":
             await interaction.response.send_message('タイトルと答えを入力してね',ephemeral=True)
             return
@@ -270,10 +270,10 @@ async def answer(interaction: discord.Interaction,st:str="check",title:str="",an
             suc,data,ids=nazo.add_contents(title,answer,data,ids)
             if suc:
                 nazo.write_file(data)
-                await interaction.response.send_message(title+" "+answer+" added",ephemeral=True)
+                await interaction.response.send_message("**"+title+"**というタイトルの謎解きの答えを**"+answer+"**として覚えたよ！",ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが被っています',ephemeral=True)
-    elif st=="remove":
+    elif command=="remove":
         if title == "":
             await interaction.response.send_message('タイトルを入力してね',ephemeral=True)
             return
@@ -282,10 +282,10 @@ async def answer(interaction: discord.Interaction,st:str="check",title:str="",an
             suc,data,ids=nazo.remove_contents(title,data,ids)
             if suc:
                 nazo.write_file(data)
-                await interaction.response.send_message(title+" removed",ephemeral=True)
+                await interaction.response.send_message("1..2の...ポカン！**"+title+"**というタイトルの謎解きの答えをきれいさっぱり忘れたよ！",ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが見つかりませんでした、すまん',ephemeral=True)
-    elif st=="check":
+    elif command=="check":
         if title == "" or answer == "":
             await interaction.response.send_modal(Question())
             # await interaction.response.send_modal(Answer())
