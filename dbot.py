@@ -3,11 +3,8 @@ from discord import app_commands
 import random
 import re
 import bingo
-import datetime
 import nazotoki as nazo
-# import nextcord
-# from nextcord.ext import commands
-# from nextcord import Interaction
+import fileout as fo
 
 class Dice:
 
@@ -47,17 +44,17 @@ class Dice:
                 elif i ==")":
                     op-=1
                     if op<0:
-                        print("カッコがおかしいよ")
+                        fo.printf("カッコがおかしいよ")
                         return False
                 else:
-                    print("入力がおかしいよ")
+                    fo.printf("入力がおかしいよ")
                     return False
             if i.isdigit():
                 f.append(int(i))
             else:
                 f.append(i)
         if op!=0:
-            print("カッコの数がおかしいよ")
+            fo.printf("カッコの数がおかしいよ")
             return False
         return f
 
@@ -149,33 +146,6 @@ class Dice:
             j=i
         return c
 
-
-# class Choose(discord.ui.Modal):
-#     def __init__(self):
-#         # questions=[]
-#         data,ids=nazo.open_file()
-#         questions=nazo.get_titles(data)
-#         qs=[]
-#         for i in questions:
-#             qs.append(discord.SelectOption(label=i,value=i))
-#         super().__init__(
-#             title="謎解きフォーム",
-#             timeout=None
-#         )
-        
-#         self.answer = discord.ui.Select(
-#             # label="問題を選んでね！",
-#             placeholder="問題を選択:",
-#             options=qs,
-#             max_values=1,
-#             # type=discord.ComponentType.select
-#             # required=True
-#         )
-#         # self.add_item(self.answer)
-#     async def on_submit(self, interaction: discord.Interaction) -> None:
-#         return await interaction.response.send_message("あなたが入力したものはこれですね！\n"+self.answer.value)
-
-# class Answer(discord.ui.Modal):
     def __init__(self):
         super().__init__(
             title="謎解きフォーム",
@@ -191,6 +161,29 @@ class Dice:
         self.add_item(self.answer)
     async def on_submit(self, interaction: discord.Interaction) -> None:
         return await interaction.response.send_message("あなたが入力したものはこれですね！\n"+self.answer.value)
+
+class Answer(discord.ui.Modal):
+    def __init__(self,title:str):
+        super().__init__(
+            title=title,
+            timeout=None
+        )
+        self.answer = discord.ui.TextInput(
+            label="解答を入力してね！",
+            style=discord.TextStyle.short,
+            placeholder="",
+            required=True
+        )
+        self.add_item(self.answer)
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+            fo.printf(interaction.user.name,"did \"modal\":","check",self.title,self.answer.value)
+            data,ids=nazo.open_file()
+            rs=nazo.check_answer(self.title,self.answer.value,data)
+            if rs==True:
+                await interaction.response.send_message("ないす！ "+interaction.user.mention+self.title+' 正解だよ',ephemeral=False)
+            elif rs==False:
+                await interaction.response.send_message('不正解だよ',ephemeral=True)
+            fo.printf(interaction.user.name,"did \"/nazo\":","check",self.title,self.answer.value)
 
 class Question(discord.ui.Modal):
     def __init__(self):
@@ -214,6 +207,7 @@ class Question(discord.ui.Modal):
         self.add_item(self.question)
         self.add_item(self.answer)
     async def on_submit(self, interaction: discord.Interaction) -> None:
+            fo.printf(interaction.user.name,"did \"modal\":","check",self.question.value,self.answer.value)
             data,ids=nazo.open_file()
             rs=nazo.check_answer(self.question.value,self.answer.value,data)
             if rs==True:
@@ -222,8 +216,48 @@ class Question(discord.ui.Modal):
                 await interaction.response.send_message('不正解だよ',ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが見つかりませんでした、すまん',ephemeral=True)
-    
+            fo.printf(interaction.user.name,"did \"/nazo\":","check",self.question.value,self.answer.value)
 
+def setbutton(title:str):
+    button = discord.ui.Button(label=title+"にこたえる！",style=discord.ButtonStyle.success,custom_id=title)
+    view = discord.ui.View()
+    view.add_item(button)
+    return view
+
+class QuestionAdd(discord.ui.Modal):
+    def __init__(self):
+        super().__init__(
+            title="謎解き追加フォーム",
+            timeout=None
+        )
+        
+        self.question = discord.ui.TextInput(
+            label="問題タイトルを入力してね！",
+            style=discord.TextStyle.short,
+            placeholder="",
+            required=True
+        )
+        self.answer = discord.ui.TextInput(
+            label="解答を入力してね！",
+            style=discord.TextStyle.short,
+            placeholder="",
+            required=True
+        )
+        self.add_item(self.question)
+        self.add_item(self.answer)
+    async def on_submit(self, interaction: discord.Interaction) -> None:
+            fo.printf(interaction.user.name,"did \"modal\":","add",self.question.value,self.answer.value)
+            data,ids=nazo.open_file()
+            suc,data,ids=nazo.add_contents(self.question.value,self.answer.value,data,ids)
+            if suc:
+                nazo.write_file(data)
+                # button = discord.ui.Button(label=self.question.value+"にこたえる！",style=discord.ButtonStyle.success,custom_id=self.question.value)
+                # view = discord.ui.View()
+                # view.add_item(button)
+                await interaction.response.send_message("",view=setbutton(self.question.value),ephemeral=False)
+            else:
+                await interaction.response.send_message('タイトルが被っています',ephemeral=True)
+            fo.printf(interaction.user.name,"did \"/nazo\":","add",self.question.value,self.answer.value)
 
 with open("config.txt",mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
@@ -239,10 +273,32 @@ tree = app_commands.CommandTree(client)
 async def on_ready():
     # アクティビティを設定
     new_activity = status_message
+    fo.printf("Bot","is ready")
     await client.change_presence(activity=discord.Game(new_activity))
     # スラッシュコマンドを同期
     await tree.sync()
 
+#全てのインタラクションを取得
+@client.event
+async def on_interaction(interaction:discord.Interaction):
+    try:
+        if interaction.data['component_type'] == 2:
+            await on_button_click(interaction)
+    except KeyError:
+        pass
+
+## Buttonの処理
+async def on_button_click(interaction:discord.Interaction):
+    fo.printf(interaction.user.name,"did \"Interaction\":",interaction.data["custom_id"])
+    custom_id = interaction.data["custom_id"]
+    #ここから下に書く
+    c=nazo.open_file()
+    titles=set(nazo.get_titles(c[0]))
+    if custom_id in titles:
+        await interaction.response.send_modal(Answer(custom_id))
+    else:
+        await interaction.response.send_message("問題が削除されたか、未登録かも！りっとーに助けを求めてね",ephemeral=True)
+    
 @client.event
 async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
@@ -253,24 +309,28 @@ async def on_voice_state_update(member, before, after):
         if after.channel!=None:
             await after.channel.send(member.display_name+"("+member.name+"が"+after.channel.name+"に入室しました")
 
-
-
 ## 以下コマンド
 
 @tree.command(name='nazo', description='謎解き関連のコマンドだよ')
-@app_commands.describe(command="add / remove / check",title="タイトル",answer="答え")
+@app_commands.describe(command="add / remove / check / set",title="タイトル",answer="答え")
 async def answer(interaction: discord.Interaction,command:str="check",title:str="",answer:str=""):
-    print(datetime.datetime.now(),interaction.user.name,"did \"/nazo\":",command,title,answer)
+    fo.printf(interaction.user.name,"did \"/nazo\":",command,title,answer)
+    # if command=="set":
+    #     await interaction.response.send_modal(QuestionButton())
     if command=="add":
         if title == "" or answer == "":
-            await interaction.response.send_message('タイトルと答えを入力してね',ephemeral=True)
+            await interaction.response.send_modal(QuestionAdd())
             return
         else:
             data,ids=nazo.open_file()
             suc,data,ids=nazo.add_contents(title,answer,data,ids)
             if suc:
                 nazo.write_file(data)
-                await interaction.response.send_message("**"+title+"**というタイトルの謎解きの答えを**"+answer+"**として覚えたよ！",ephemeral=True)
+                # await interaction.response.send_message("**"+title+"**というタイトルの謎解きの答えを**"+answer+"**として覚えたよ！",ephemeral=True)
+                # button = discord.ui.Button(label=title+"にこたえる！",style=discord.ButtonStyle.success,custom_id=title)
+                # view = discord.ui.View()
+                # view.add_item(button)
+                await interaction.response.send_message("",view=setbutton(title),ephemeral=False)
             else:
                 await interaction.response.send_message('タイトルが被っています',ephemeral=True)
     elif command=="remove":
@@ -288,7 +348,6 @@ async def answer(interaction: discord.Interaction,command:str="check",title:str=
     elif command=="check":
         if title == "" or answer == "":
             await interaction.response.send_modal(Question())
-            # await interaction.response.send_modal(Answer())
         else:
             data,ids=nazo.open_file()
             rs=nazo.check_answer(title,answer,data)
@@ -298,57 +357,51 @@ async def answer(interaction: discord.Interaction,command:str="check",title:str=
                 await interaction.response.send_message('不正解だよ',ephemeral=True)
             else:
                 await interaction.response.send_message('タイトルが見つかりませんでした、すまん',ephemeral=True)
-
-
-
-
-
-
-
-
+    else:
+        await interaction.response.send_message('コマンドがおかしいよ',ephemeral=True)
 
 @tree.command(name='r', description='ダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction,input_dice:str="1d100"):
+    fo.printf(interaction.user.name,"did \"/r\":",*rs)
     rs=Dice.do(input_dice)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
     rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(datetime.datetime.now(),interaction.user.name,"did \"/r\":",*rs)
     await interaction.response.send_message(rd)
 
 @tree.command(name='ohuro', description='おふろのおんどは1d100度！')
 async def test(interaction: discord.Interaction):
+    fo.printf(interaction.user.name,"did \"/ohuro\":",*rs)
     rs=Dice.do("1d100")
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
     rd="# "+str(rs[1])+"度!"
-    print(datetime.datetime.now(),interaction.user.name,"did \"/ohuro\":",*rs)
     await interaction.response.send_message(rd)
 
 @tree.command(name='rs', description='シークレットダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction,input_dice:str,):
+    fo.printf(interaction.user.name,"did \"/rs\":",*rs)
     rs=Dice.do(input_dice)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
     rd="# "+str(rs[1])+"\n``"+input_dice+"`` = "+" **"+str(rs[1])+"** ``"+"(="+rs[0]+")  <<"+str(rs[2])+"``"
-    print(datetime.datetime.now(),interaction.user.name,"did \"/rs\":",*rs)
     await interaction.response.send_message(rd,ephemeral=True)
 
 @tree.command(name='lit', description='(り・と・)って言うよ')
 # @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction):
-    print(datetime.datetime.now(),interaction.user.name,"did \"/lit\":")
+    fo.printf(interaction.user.name,"did \"/lit\":")
     await interaction.response.send_message("(り・と・)っ")
 
 @tree.command(name='lits', description='指定回数(り・と・)って言うよ、自分にしか見えないよ')
 @app_commands.describe(count="2以上じゃないと動かないよ")
 async def test(interaction: discord.Interaction,count:int):
-    print(datetime.datetime.now(),interaction.user.name,"did \"/lits\":",count)
+    fo.printf(interaction.user.name,"did \"/lits\":",count)
     if int(count)<2:
         await interaction.response.send_message('2以上じゃないと動かないよ',ephemeral=True)
         return
@@ -356,9 +409,8 @@ async def test(interaction: discord.Interaction,count:int):
         await interaction.response.send_message("(り・と・)っ"*count,ephemeral=True)
 
 @tree.command(name='choice', description='自分と同じ通話に居る人から一人メンションするよ')
-# @app_commands.describe(count="通話に居てね")
 async def test(interaction: discord.Interaction):
-    print(datetime.datetime.now(),interaction.user.name,"did \"/choice\":")
+    fo.printf(interaction.user.name,"did \"/choice\":")
     if interaction.user.voice==None:
         await interaction.response.send_message('通話に居てね')
         return
@@ -371,30 +423,24 @@ async def test(interaction: discord.Interaction):
         r=random.choice(rl)
         await interaction.response.send_message(r.display_name+"("+r.name+")")
 
-@tree.command(name='status', description='ステメ設定します')
-@app_commands.describe(st="変更内容")
-async def notice(interaction: discord.Interaction,st:str):
-    print(datetime.datetime.now(),interaction.user.name,"did \"/status\":")
-    global status_message
-    status_message=st
-    await client.change_presence(activity=discord.Game(st))
-    await interaction.response.send_message(st+"に変更しました")
-
-
 @tree.command(name='syo', description='ハイ')
 async def notice(interaction: discord.Interaction):
-    print(datetime.datetime.now(),interaction.user.name,"did \"/syo\":")
+    fo.printf(interaction.user.name,"did \"/syo\":")
     await interaction.response.send_message("ハイ")
 
 @tree.command(name='bingo', description='ビンゴカードを出すよ')
 async def notice(interaction: discord.Interaction):
+    fo.printf(interaction.user.name,"did \"/bingo\"")
     #とりま1~100まで固定
     bingo.bingo(1,100)
-    print(datetime.datetime.now(),interaction.user.name,"did \"/bingo\"")
     await interaction.response.send_message(file=discord.File("work.jpg"))
 
-
-
-
+@tree.command(name='exit', description='ばいばーい')
+async def exits(interaction: discord.Interaction):
+    fo.printf(interaction.user.name,"did \"/exit\":")
+    if interaction.user.id==int(712105359673917480):
+        await interaction.response.send_message("ばいばーい",ephemeral=True)
+        await client.close()
+    else:
+        await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！<!@712105359673917480> を呼んでね",ephemeral=True)
 client.run(token)
-
