@@ -22,3 +22,6 @@
 2024-05-03 21:47:00.104529 lit_to did "modal": check aaa bbb
 2024-05-03 21:47:00.453638 lit_to did "/nazo": check aaa bbb
 2024-05-03 21:47:25.042961 Bot is ready
+2024-05-03 23:15:47.763229 Bot is ready
+2024-05-03 23:18:20.247569 Bot is ready
+2024-05-03 23:18:27.587385 lit_to did "/ohuro": 63 63 [[63]]

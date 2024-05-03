@@ -326,10 +326,6 @@ async def answer(interaction: discord.Interaction,command:str="check",title:str=
             suc,data,ids=nazo.add_contents(title,answer,data,ids)
             if suc:
                 nazo.write_file(data)
-                # await interaction.response.send_message("**"+title+"**というタイトルの謎解きの答えを**"+answer+"**として覚えたよ！",ephemeral=True)
-                # button = discord.ui.Button(label=title+"にこたえる！",style=discord.ButtonStyle.success,custom_id=title)
-                # view = discord.ui.View()
-                # view.add_item(button)
                 await interaction.response.send_message("",view=setbutton(title),ephemeral=False)
             else:
                 await interaction.response.send_message('タイトルが被っています',ephemeral=True)
@@ -363,8 +359,8 @@ async def answer(interaction: discord.Interaction,command:str="check",title:str=
 @tree.command(name='r', description='ダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction,input_dice:str="1d100"):
-    fo.printf(interaction.user.name,"did \"/r\":",*rs)
     rs=Dice.do(input_dice)
+    fo.printf(interaction.user.name,"did \"/r\":",*rs)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
@@ -373,8 +369,8 @@ async def test(interaction: discord.Interaction,input_dice:str="1d100"):
 
 @tree.command(name='ohuro', description='おふろのおんどは1d100度！')
 async def test(interaction: discord.Interaction):
-    fo.printf(interaction.user.name,"did \"/ohuro\":",*rs)
     rs=Dice.do("1d100")
+    fo.printf(interaction.user.name,"did \"/ohuro\":",*rs)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
@@ -384,8 +380,8 @@ async def test(interaction: discord.Interaction):
 @tree.command(name='rs', description='シークレットダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction,input_dice:str,):
-    fo.printf(interaction.user.name,"did \"/rs\":",*rs)
     rs=Dice.do(input_dice)
+    fo.printf(interaction.user.name,"did \"/rs\":",*rs)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
         return
