@@ -166,10 +166,9 @@ def check_answer(title:str,answer:str,user:str):
     data,ids=nazo.open_file()
     rs=nazo.check_answer(title,answer,data)
     if rs==True:
-        return user+" "+"ないす！ "+title+" "+answer+"  →"+' 正解だよ',rs
+        return user+" "+"ないす！ "+title+" "+"  →"+' 正解だよ',False
     elif rs==False:
-        return user+" "+title+" "+answer+"  →"+':不正解だよ',rs
-
+        return user+" "+title+" "+answer+"  →"+':不正解だよ',True
 
 class Answer(discord.ui.Modal):
     def __init__(self,title:str):
@@ -251,7 +250,7 @@ class QuestionAdd(discord.ui.Modal):
                 await interaction.response.send_message("",view=setbutton(self.question.value),ephemeral=False)
             else:
                 await interaction.response.send_message('タイトルが被っています',ephemeral=True)
-            fo.printf(interaction.user.name,"did \"/nazo\":","add",self.question.value,self.answer.value)
+            # fo.printf(interaction.user.name,"did \"/nazo\":","add",self.question.value,self.answer.value)
 
 with open("config.txt",mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
@@ -409,6 +408,13 @@ async def test(interaction: discord.Interaction):
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/syo\":")
     await interaction.response.send_message("ハイ")
+
+
+@tree.command(name='syo', description='そんなぁ！')
+async def notice(interaction: discord.Interaction):
+    fo.printf(interaction.user.name,"did \"/67\":")
+    await interaction.response.send_message("そんなぁ！")
+
 
 @tree.command(name='bingo', description='ビンゴカードを出すよ')
 async def notice(interaction: discord.Interaction):
