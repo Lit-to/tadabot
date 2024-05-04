@@ -410,7 +410,7 @@ async def notice(interaction: discord.Interaction):
     await interaction.response.send_message("ハイ")
 
 
-@tree.command(name='syo', description='そんなぁ！')
+@tree.command(name='67', description='そんなぁ！')
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/67\":")
     await interaction.response.send_message("そんなぁ！")
