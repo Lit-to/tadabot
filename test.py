@@ -166,10 +166,9 @@ def check_answer(title:str,answer:str,user:str):
     data,ids=nazo.open_file()
     rs=nazo.check_answer(title,answer,data)
     if rs==True:
-        return user+" "+"ないす！ "+title+" "+answer+"  →"+' 正解だよ',rs
+        return user+" "+"ないす！ "+title+" "+"  →"+' 正解だよ',False,discord.ui.View()
     elif rs==False:
-        return user+" "+title+" "+answer+"  →"+':不正解だよ',rs
-
+        return user+" "+title+" "+answer+"  →"+':不正解だよ',True,setanswer(title)
 
 class Answer(discord.ui.Modal):
     def __init__(self,title:str):
@@ -186,8 +185,8 @@ class Answer(discord.ui.Modal):
         self.add_item(self.answer)
     async def on_submit(self, interaction: discord.Interaction) -> None:
         fo.printf(interaction.user.name,"did \"modal\":","check",self.title,self.answer.value)
-        return_message,em=check_answer(self.title,self.answer.value,interaction.user.mention)
-        await interaction.response.send_message(return_message,ephemeral=em)
+        return_message,em,v=check_answer(self.title,self.answer.value,interaction.user.mention)
+        await interaction.response.send_message(return_message,ephemeral=em,view=v)
 
 class Question(discord.ui.Modal):
     def __init__(self):
@@ -212,11 +211,20 @@ class Question(discord.ui.Modal):
         self.add_item(self.answer)
     async def on_submit(self, interaction: discord.Interaction) -> None:
         fo.printf(interaction.user.name,"did \"/nazo\":","check",self.question.value,self.answer.value)
-        return_message,em=check_answer(self.title,self.answer.value,interaction.user.mention)
-        await interaction.response.send_message(return_message,ephemeral=em)
+        return_message,em,v=check_answer(self.title,self.answer.value,interaction.user.mention)
+        await interaction.response.send_message(return_message,ephemeral=em,view=v)
 
 def setbutton(title:str):
     button = discord.ui.Button(label=title+"にこたえる！",style=discord.ButtonStyle.success,custom_id=title)
+    view = discord.ui.View()
+    view.add_item(button)
+    return view
+
+def setanswer(title:str,turn=False):
+    if turn:
+        button = discord.ui.Button(label="あきらめて答えを見る",style=discord.ButtonStyle.danger,custom_id="!"+title)
+    else:
+        button = discord.ui.Button(label=title+"の答えを見る",style=discord.ButtonStyle.secondary,custom_id="?"+title)
     view = discord.ui.View()
     view.add_item(button)
     return view
@@ -251,7 +259,12 @@ class QuestionAdd(discord.ui.Modal):
                 await interaction.response.send_message("",view=setbutton(self.question.value),ephemeral=False)
             else:
                 await interaction.response.send_message('タイトルが被っています',ephemeral=True)
-            fo.printf(interaction.user.name,"did \"/nazo\":","add",self.question.value,self.answer.value)
+            # fo.printf(interaction.user.name,"did \"/nazo\":","add",self.question.value,self.answer.value)
+
+def getAnswer(title):
+    c=nazo.open_file()
+    return nazo.get_answer(title,c[0])
+
 
 with open("config.txt",mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
@@ -286,13 +299,18 @@ async def on_button_click(interaction:discord.Interaction):
     fo.printf(interaction.user.name,"did \"Interaction\":",interaction.data["custom_id"])
     custom_id = interaction.data["custom_id"]
     #ここから下に書く
-    c=nazo.open_file()
-    titles=set(nazo.get_titles(c[0]))
-    if custom_id in titles:
-        await interaction.response.send_modal(Answer(custom_id))
+    if custom_id[0]=="!":
+        title=custom_id[1:]
+        await interaction.response.send_message(title+"の答えは:**"+getAnswer(title)+"**でした！！",ephemeral=True)    
+    elif custom_id[0]=="?":
+        await interaction.response.send_message("## 答え出すけどいい？\nもし、いらない場合は右下の これらのメッセージを削除するを押してね。↓",view=setanswer(custom_id[1:],True),ephemeral=True)
     else:
-        await interaction.response.send_message("問題が削除されたか、未登録かも！りっとーに助けを求めてね",ephemeral=True)
-    
+        c=nazo.open_file()
+        titles=set(nazo.get_titles(c[0]))
+        if custom_id in titles:
+            await interaction.response.send_modal(Answer(custom_id))
+        else:
+            await interaction.response.send_message("問題が削除されたか、未登録かも！りっとーに助けを求めてね",ephemeral=True)
 @client.event
 async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
@@ -338,8 +356,8 @@ async def answer(interaction: discord.Interaction,command:str="check",title:str=
             await interaction.response.send_modal(Question())
         else:
             fo.printf(interaction.user.name,"did \"modal\":","check",title,answer)
-            return_message,em=check_answer(title,answer,interaction.user.mention)
-            await interaction.response.send_message(return_message,ephemeral=em)
+            return_message,em,v=check_answer(title,answer,interaction.user.mention)
+            await interaction.response.send_message(return_message,ephemeral=em,view=v)
     else:
         await interaction.response.send_message('コマンドがおかしいよ',ephemeral=True)
 
@@ -409,6 +427,13 @@ async def test(interaction: discord.Interaction):
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/syo\":")
     await interaction.response.send_message("ハイ")
+
+
+@tree.command(name='67', description='そんなぁ！')
+async def notice(interaction: discord.Interaction):
+    fo.printf(interaction.user.name,"did \"/67\":")
+    await interaction.response.send_message("そんなぁ！")
+
 
 @tree.command(name='bingo', description='ビンゴカードを出すよ')
 async def notice(interaction: discord.Interaction):

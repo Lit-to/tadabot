@@ -55,6 +55,11 @@ def get_titles(contents):
         titles.append(contents[i][0])
     return titles
 
+def get_answer(title,contents):
+    for i in range(len(contents)):
+        if contents[i][0]==title:
+            return contents[i][1]
+    return False
 
 s=[]
 data,ids=open_file(path)
