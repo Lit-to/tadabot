@@ -1,7 +1,7 @@
 import csv
-path="answers.csv"
+path="./answers.csv"
 
-def open_file(path="answers.csv"):
+def open_file(path="./answers.csv"):
     with open(path,mode="r",encoding="UTF-8") as f:
         reader=csv.reader(f)
         contents=[]

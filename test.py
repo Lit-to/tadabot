@@ -6,6 +6,20 @@ import bingo
 import nazotoki as nazo
 import fileout as fo
 
+def is_prime(n):
+    if n <= 1:
+        return False
+    elif n <= 3:
+        return True
+    elif n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
 class Dice:
 
     def do(s):
@@ -384,7 +398,7 @@ async def test(interaction: discord.Interaction):
 
 @tree.command(name='rs', description='シークレットダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
-async def test(interaction: discord.Interaction,input_dice:str,):
+async def test(interaction: discord.Interaction,input_dice:str):
     rs=Dice.do(input_dice)
     fo.printf(interaction.user.name,"did \"/rs\":",*rs)
     if rs==False:
@@ -407,6 +421,18 @@ async def test(interaction: discord.Interaction,count:int):
         return
     else:
         await interaction.response.send_message("(り・と・)っ"*count,ephemeral=True)
+
+@tree.command(name='prime', description='素数かどうか教えてくれるよ！')
+@app_commands.describe(count="整数を入力してね")
+async def test(interaction: discord.Interaction,count:int):
+    fo.printf(interaction.user.name,"did \"/prime\":",count)
+    if count==57:
+        await interaction.response.send_message("# **57は素数だよ！**\n誰がなんと言おうとも、57は素数だよ！")
+        return
+    elif is_prime(count):
+        await interaction.response.send_message(str(count)+"は素数だよ！")
+    else:
+        await interaction.response.send_message(str(count)+"は素数ではないよ！！")
 
 @tree.command(name='choice', description='自分と同じ通話に居る人から一人メンションするよ')
 async def test(interaction: discord.Interaction):
@@ -449,5 +475,72 @@ async def exits(interaction: discord.Interaction):
         await interaction.response.send_message("ばいばーい",ephemeral=True)
         await client.close()
     else:
-        await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！<!@712105359673917480> を呼んでね",ephemeral=True)
+        await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！@lit_to を呼んでね",ephemeral=True)
+
+@tree.command(name='status', description='通話ステータスを変更するよ')
+@app_commands.describe(color="1:赤 2:黄 3:青",input_status="後ろの説明書きを入力してね")
+async def test(interaction: discord.Interaction,color:int=-1,input_status:str=""):
+    fo.printf(interaction.user.name,"did \"/status\":")
+    statusChannel=interaction.guild.get_channel(1268210484499447828)
+    if color==-1:
+        status=statusChannel.name[0]
+    elif color==1:
+        status="🔴"
+    elif color==2:
+        status="🟡"
+    elif color==3:
+        status="🔵"
+    if status=="":
+        status+=statusChannel.name[1:]
+    else:
+        status+=input_status
+    await statusChannel.edit(name=status,reason="status changed by "+interaction.user.name)
+    await interaction.response.send_message("ステータスを変更しました",ephemeral=True)
+    return
+
+@tree.command(name='lock', description='今入っている通話のロックをかけるか、外せるよ')
+async def test(interaction: discord.Interaction):
+    fo.printf(interaction.user.name,"did \"/lock\":")
+    if interaction.user.voice==None:
+        await interaction.response.send_message('通話に居てね',ephemeral=True)
+        return
+    else:
+        if (interaction.user.voice.channel.permissions_for(interaction.user).connect):
+            await interaction.user.voice.channel.set_permissions(interaction.guild.default_role,connect=False)
+            await interaction.response.send_message(interaction.user.voice.channel.name+"をロックしました",ephemeral=False)
+            return
+        else:
+            await interaction.user.voice.channel.set_permissions(interaction.guild.default_role,connect=True)
+            await interaction.response.send_message(interaction.user.voice.channel.name+"のロックを解除しました",ephemeral=False)
+            return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 client.run(token)

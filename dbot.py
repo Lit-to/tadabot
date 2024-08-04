@@ -6,6 +6,20 @@ import bingo
 import nazotoki as nazo
 import fileout as fo
 
+def is_prime(n):
+    if n <= 1:
+        return False
+    elif n <= 3:
+        return True
+    elif n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
 class Dice:
 
     def do(s):
@@ -408,6 +422,18 @@ async def test(interaction: discord.Interaction,count:int):
     else:
         await interaction.response.send_message("(り・と・)っ"*count,ephemeral=True)
 
+@tree.command(name='prime', description='素数かどうか教えてくれるよ！')
+@app_commands.describe(count="整数を入力してね")
+async def test(interaction: discord.Interaction,count:int):
+    fo.printf(interaction.user.name,"did \"/prime\":",count)
+    if count==57:
+        await interaction.response.send_message("# **57は素数だよ！**\n誰がなんと言おうとも、57は素数だよ！")
+        return
+    elif is_prime(count):
+        await interaction.response.send_message(str(count)+"は素数だよ！")
+    else:
+        await interaction.response.send_message(str(count)+"は素数ではないよ！！")
+
 @tree.command(name='choice', description='自分と同じ通話に居る人から一人メンションするよ')
 async def test(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/choice\":")
@@ -449,5 +475,5 @@ async def exits(interaction: discord.Interaction):
         await interaction.response.send_message("ばいばーい",ephemeral=True)
         await client.close()
     else:
-        await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！<!@712105359673917480> を呼んでね",ephemeral=True)
+        await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！@lit_to を呼んでね",ephemeral=True)
 client.run(token)
