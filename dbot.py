@@ -398,7 +398,7 @@ async def test(interaction: discord.Interaction):
 
 @tree.command(name='rs', description='シークレットダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
-async def test(interaction: discord.Interaction,input_dice:str,):
+async def test(interaction: discord.Interaction,input_dice:str):
     rs=Dice.do(input_dice)
     fo.printf(interaction.user.name,"did \"/rs\":",*rs)
     if rs==False:
@@ -476,4 +476,71 @@ async def exits(interaction: discord.Interaction):
         await client.close()
     else:
         await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！@lit_to を呼んでね",ephemeral=True)
+
+@tree.command(name='status', description='通話ステータスを変更するよ')
+@app_commands.describe(color="1:赤 2:黄 3:青",input_status="後ろの説明書きを入力してね")
+async def test(interaction: discord.Interaction,color:int=-1,input_status:str=""):
+    fo.printf(interaction.user.name,"did \"/status\":")
+    statusChannel=interaction.guild.get_channel(1268210484499447828)
+    if color==-1:
+        status=statusChannel.name[0]
+    elif color==1:
+        status="🔴"
+    elif color==2:
+        status="🟡"
+    elif color==3:
+        status="🔵"
+    if status=="":
+        status+=statusChannel.name[1:]
+    else:
+        status+=input_status
+    await statusChannel.edit(name=status,reason="status changed by "+interaction.user.name)
+    await interaction.response.send_message("ステータスを変更しました",ephemeral=True)
+    return
+
+@tree.command(name='lock', description='今入っている通話のロックをかけるか、外せるよ')
+async def test(interaction: discord.Interaction):
+    fo.printf(interaction.user.name,"did \"/lock\":")
+    if interaction.user.voice==None:
+        await interaction.response.send_message('通話に居てね',ephemeral=True)
+        return
+    else:
+        if (interaction.user.voice.channel.permissions_for(interaction.user).connect):
+            await interaction.user.voice.channel.set_permissions(interaction.guild.default_role,connect=False)
+            await interaction.response.send_message(interaction.user.voice.channel.name+"をロックしました",ephemeral=False)
+            return
+        else:
+            await interaction.user.voice.channel.set_permissions(interaction.guild.default_role,connect=True)
+            await interaction.response.send_message(interaction.user.voice.channel.name+"のロックを解除しました",ephemeral=False)
+            return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 client.run(token)
