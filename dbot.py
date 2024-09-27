@@ -19,7 +19,6 @@ def is_prime(n):
             return False
         i += 6
     return True
-
 class Dice:
 
     def do(s):
@@ -175,7 +174,6 @@ class Dice:
         self.add_item(self.answer)
     async def on_submit(self, interaction: discord.Interaction) -> None:
         return await interaction.response.send_message("あなたが入力したものはこれですね！\n"+self.answer.value)
-
 def check_answer(title:str,answer:str,user:str):
     data,ids=nazo.open_file()
     rs=nazo.check_answer(title,answer,data)
@@ -183,7 +181,6 @@ def check_answer(title:str,answer:str,user:str):
         return user+" "+"ないす！ "+title+" "+"  →"+' 正解だよ',False,discord.ui.View()
     elif rs==False:
         return user+" "+title+" "+answer+"  →"+':不正解だよ',True,setanswer(title)
-
 class Answer(discord.ui.Modal):
     def __init__(self,title:str):
         super().__init__(
@@ -201,7 +198,6 @@ class Answer(discord.ui.Modal):
         fo.printf(interaction.user.name,"did \"modal\":","check",self.title,self.answer.value)
         return_message,em,v=check_answer(self.title,self.answer.value,interaction.user.mention)
         await interaction.response.send_message(return_message,ephemeral=em,view=v)
-
 class Question(discord.ui.Modal):
     def __init__(self):
         super().__init__(
@@ -227,13 +223,11 @@ class Question(discord.ui.Modal):
         fo.printf(interaction.user.name,"did \"/nazo\":","check",self.question.value,self.answer.value)
         return_message,em,v=check_answer(self.title,self.answer.value,interaction.user.mention)
         await interaction.response.send_message(return_message,ephemeral=em,view=v)
-
 def setbutton(title:str):
     button = discord.ui.Button(label=title+"にこたえる！",style=discord.ButtonStyle.success,custom_id=title)
     view = discord.ui.View()
     view.add_item(button)
     return view
-
 def setanswer(title:str,turn=False):
     if turn:
         button = discord.ui.Button(label="あきらめて答えを見る",style=discord.ButtonStyle.danger,custom_id="!"+title)
@@ -242,7 +236,6 @@ def setanswer(title:str,turn=False):
     view = discord.ui.View()
     view.add_item(button)
     return view
-
 class QuestionAdd(discord.ui.Modal):
     def __init__(self):
         super().__init__(
@@ -274,12 +267,9 @@ class QuestionAdd(discord.ui.Modal):
             else:
                 await interaction.response.send_message('タイトルが被っています',ephemeral=True)
             # fo.printf(interaction.user.name,"did \"/nazo\":","add",self.question.value,self.answer.value)
-
 def getAnswer(title):
     c=nazo.open_file()
     return nazo.get_answer(title,c[0])
-
-
 with open("config.txt",mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
     token=token[1]
@@ -333,7 +323,7 @@ async def on_voice_state_update(member, before, after):
         if before.channel!=None:
             await before.channel.send(member.display_name+"("+member.name+"が"+before.channel.name+"から退出しました")
         if after.channel!=None:
-            await after.channel.send(member.display_name+"("+member.name+"が"+after.channel.name+"に入室しました")
+            await after.channel.send(member.display_name+"("+member.name+"が"+after.channel.name+")に入室しました")
 
 ## 以下コマンド
 
