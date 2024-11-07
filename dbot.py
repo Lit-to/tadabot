@@ -455,8 +455,10 @@ async def notice(interaction: discord.Interaction):
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/bingo\"")
     #とりま1~100まで固定
-    bingo.bingo(1,100)
-    await interaction.response.send_message(file=discord.File("work.jpg"))
+    num_list=bingo.bingo(1,100)
+    await interaction.response.defer(thinking=True)
+    await interaction.followup.send(str(num_list).replace(" ",""))
+    await interaction.followup.send(file=discord.File("work.jpg"))
 
 @tree.command(name='exit', description='ばいばーい')
 async def exits(interaction: discord.Interaction):
