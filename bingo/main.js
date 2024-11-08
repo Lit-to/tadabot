@@ -40,9 +40,21 @@ function split_query(query){
             result[(i-1)/2]=query.substring(i-1,i+1)
         }
     }
-    return result
+    return result;
 }
 
+function decode_num(key){
+    alp="abcdefghijklmnopqrstuvwxyz";
+    return (alp.indexOf(key[0]))*26+alp.indexOf(key[1]);
+}
+
+function decode_query(query){
+    result=[]
+    for(var i=0;i<query.length;i++){
+        result[i]=decode_num(query[i])
+    }
+    return result;
+}
 
 function open_cell(pos) {
     BOARD[pos[0]][pos[1]] = false;
@@ -133,6 +145,7 @@ query=get_query()
 // set_board(nums["?card"])
 // query=decode_cell(query)
 nums=split_query(query["?card"]);
+nums=decode_query(nums)
 set_board(nums)
 makeTable(nums)
 

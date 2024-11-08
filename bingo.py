@@ -66,6 +66,7 @@ def bingo(min,max):
     #             pos[1]+=130
     #         pos[0]+=130
     # img.save("work.jpg")
+    print(numlist[:24])
     return compression(numlist[:24])
     # return numlist[::-1][:24]
 
