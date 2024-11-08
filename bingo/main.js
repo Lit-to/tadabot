@@ -33,6 +33,17 @@ function set_board(nums) {
     // NUM.insert(2, 'FREE');
 }
 
+function split_query(query){
+    result=[]
+    for(var i=0;i<query.length;i++){
+        if (i%2==1){
+            result[(i-1)/2]=query.substring(i-1,i+1)
+        }
+    }
+    return result
+}
+
+
 function open_cell(pos) {
     BOARD[pos[0]][pos[1]] = false;
 }
@@ -118,8 +129,11 @@ function makeTable() {
 }
 
 // nums = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x']
-nums=get_query()
+query=get_query()
+// set_board(nums["?card"])
+// query=decode_cell(query)
+nums=split_query(query["?card"]);
 set_board(nums)
-makeTable()
+makeTable(nums)
 
 
