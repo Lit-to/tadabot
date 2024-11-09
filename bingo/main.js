@@ -16,53 +16,69 @@ for (var i = 0; i < HEIGHT; i++) {
     }
 }
 function set_board(nums) {
-    is_half=0;
+    is_half = 0;
     for (var i = 0; i < HEIGHT; i++) {
         temp = [];
         for (var j = 0; j < WEIGHT; j++) {
-            if (i*5+j==12){
+            if (i * 5 + j == 12) {
                 temp[j] = 'FREE';
-                is_half=1;
+                is_half = 1;
                 continue;
             }
             // logger.log(i*5+j);
-            temp[j] = nums[i * 5 + j-is_half];
+            temp[j] = nums[i * 5 + j - is_half];
         }
-        NUM[i]=temp;
+        NUM[i] = temp;
     }
     // NUM.insert(2, 'FREE');
 }
 
-function split_query(query){
-    result=[]
-    for(var i=0;i<query.length;i++){
-        if (i%2==1){
-            result[(i-1)/2]=query.substring(i-1,i+1)
+function split_query(query) {
+    result = []
+    for (var i = 0; i < query.length; i++) {
+        if (i % 2 == 1) {
+            result[(i - 1) / 2] = query.substring(i - 1, i + 1)
         }
     }
     return result;
 }
 
-function decode_num(key){
-    alp="abcdefghijklmnopqrstuvwxyz";
-    return (alp.indexOf(key[0]))*26+alp.indexOf(key[1]);
+function decode_num(key) {
+    alp = "abcdefghijklmnopqrstuvwxyz";
+    return (alp.indexOf(key[0])) * 26 + alp.indexOf(key[1]);
 }
 
-function decode_query(query){
-    result=[]
-    for(var i=0;i<query.length;i++){
-        result[i]=decode_num(query[i])
+function decode_query(query) {
+    result = []
+    for (var i = 0; i < query.length; i++) {
+        result[i] = decode_num(query[i])
     }
     return result;
 }
 
-function open_cell(pos) {
-    BOARD[pos[0]][pos[1]] = false;
+function open_cell(td) {
+    console.log("aaaaa<", td.target)
+    pos = convert_pos_from_id(parseInt(td.target.id))
+    BOARD[pos[0]][pos[1]] = true;
+    td.target.addEventListener = ("click",function (td) {
+        close_cell(td);
+    },once=true);
 }
 
-function close_cell(pos) {
+function close_cell(td) {
+    pos = convert_pos_from_id(parseInt(td.target.id))
+    console.log("bbbbb<", pos)
     BOARD[pos[0]][pos[1]] = false;
+    td.target.addEventListener = ("click",function (td) {
+        open_cell(td);
+    },once=true);
 }
+
+function convert_pos_from_id(id){
+    return [Math.floor(id/5),id%5]
+}
+
+
 
 function check_bingo() {
     bingo = 0
@@ -114,11 +130,6 @@ function get_query() {
     }
     return result;
 }
-
-
-
-
-
 function makeTable() {
     var table = document.createElement('table');
     table.className = 'bingo-card';
@@ -129,9 +140,9 @@ function makeTable() {
             var td = document.createElement('td');
             td.textContent = NUM[i][j];
             td.className = "bingo-cell"
-            if (REACH[i][j]) {
-                td.style.backgroundColor = '#FF0000';
-            }
+            td.id=i*5+j
+            // td.style.backgroundColor = '#FF0000'
+            td.addEventListener("click",function(td){open_cell(td)},once=true);
             tr.appendChild(td);
         }
         table.appendChild(tr);
@@ -141,14 +152,14 @@ function makeTable() {
 }
 
 // nums = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x']
-query=get_query()
+query = get_query()
 // set_board(nums["?card"])
 // query=decode_cell(query)
-if (query["?card"]==undefined){
-    query["?card"]="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+if (query["?card"] == undefined) {
+    query["?card"] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 }
-nums=split_query(query["?card"]);
-nums=decode_query(nums)
+nums = split_query(query["?card"]);
+nums = decode_query(nums)
 set_board(nums)
 makeTable(nums)
 
