@@ -144,6 +144,9 @@ function makeTable() {
 query=get_query()
 // set_board(nums["?card"])
 // query=decode_cell(query)
+if (query["?card"]==undefined){
+    query["?card"]="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
 nums=split_query(query["?card"]);
 nums=decode_query(nums)
 set_board(nums)
