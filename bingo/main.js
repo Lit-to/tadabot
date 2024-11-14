@@ -56,22 +56,30 @@ function decode_query(query) {
     return result;
 }
 
-function open_cell(td) {
-    console.log("aaaaa<", td.target)
-    pos = convert_pos_from_id(parseInt(td.target.id))
-    BOARD[pos[0]][pos[1]] = true;
-    td.target.addEventListener = ("click",function (td) {
+function switch_cell(id){
+    td=document.getElementById(id);
+    if (td.classList.contains("bingo-cell-open")) {
         close_cell(td);
-    },once=true);
+    }else{
+        open_cell(td);
+    }
+    td.onclick=function(){return switch_cell(this.id)};
+}
+
+function open_cell(td) {
+    console.log("aaaaa<", td)
+    pos = convert_pos_from_id(parseInt(td.id))
+    BOARD[pos[0]][pos[1]] = true;
+    // console.log(td)
+    td.classList.add("bingo-cell-open");
 }
 
 function close_cell(td) {
-    pos = convert_pos_from_id(parseInt(td.target.id))
-    console.log("bbbbb<", pos)
+    console.log("bbbb>", td)
+    pos = convert_pos_from_id(parseInt(td.id))
     BOARD[pos[0]][pos[1]] = false;
-    td.target.addEventListener = ("click",function (td) {
-        open_cell(td);
-    },once=true);
+    // console.log(td)
+    td.classList.remove("bingo-cell-open");
 }
 
 function convert_pos_from_id(id){
@@ -142,7 +150,7 @@ function makeTable() {
             td.className = "bingo-cell"
             td.id=i*5+j
             // td.style.backgroundColor = '#FF0000'
-            td.addEventListener("click",function(td){open_cell(td)},once=true);
+            td.onclick = function(){switch_cell(this.id,true)};
             tr.appendChild(td);
         }
         table.appendChild(tr);
