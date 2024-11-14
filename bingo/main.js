@@ -155,8 +155,20 @@ function makeTable() {
         }
         table.appendChild(tr);
     }
-    var card = document.getElementById('bingo-card');
+    var card = document.getElementById('bingo-card-outline');
     card.after(table);
+}
+
+function loadTable(){
+    table=document.getElementById("bingo-card");
+    for (var i = 0; i < HEIGHT; i++) {
+        for (var j = 0; j < WEIGHT; j++) {
+            td=table.rows[i].cells[j];
+            if(BOARD[i][j]){
+                //
+            }
+        }
+    }
 }
 
 // nums = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x']
