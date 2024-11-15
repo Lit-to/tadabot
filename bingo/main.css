@@ -92,5 +92,7 @@ a.btn--circle:hover {
 }
 .bingo-cell-open {
     background-color: #5cec30;
-
+}
+.bingo-cell-reach {
+    background-color: #ece930;
 }

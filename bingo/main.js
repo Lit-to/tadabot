@@ -1,17 +1,21 @@
-BOARD = [];
-WEIGHT = 5
-HEIGHT = 5
-NUM = [];
-REACH = [];
+BOARD = [];//穴が空いているの場所を表す
+WEIGHT = 5//横
+HEIGHT = 5//縦
+NUM = [];//数字を格納する
+REACH_COLUMN = [];//縦に見たときにリーチの場所を示す
+REACH_ROW = [];//横に見たときにリーチの場所を示す
+REACH= [];//リーチの場所を表す
 
 //ボード生成
 for (var i = 0; i < HEIGHT; i++) {
     BOARD[i] = [];
-    REACH[i] = [];
+    REACH_COLUMN[i] = [];
+    REACH_ROW[i] = [];
     NUM[i] = [];
     for (var j = 0; j < WEIGHT; j++) {
         BOARD[i][j] = false;
-        REACH[i][j] = false;
+        REACH_COLUMN[i][j] = false;
+        REACH_ROW[i][j] = false;
         NUM[i][j] = 0;
     }
 }
@@ -56,14 +60,15 @@ function decode_query(query) {
     return result;
 }
 
-function switch_cell(id){
-    td=document.getElementById(id);
+function switch_cell(id) {
+    td = document.getElementById(id);
     if (td.classList.contains("bingo-cell-open")) {
         close_cell(td);
-    }else{
+    } else {
         open_cell(td);
     }
-    td.onclick=function(){return switch_cell(this.id)};
+    load_reach();
+    td.onclick = function () { return switch_cell(this.id) };
 }
 
 function open_cell(td) {
@@ -82,8 +87,8 @@ function close_cell(td) {
     td.classList.remove("bingo-cell-open");
 }
 
-function convert_pos_from_id(id){
-    return [Math.floor(id/5),id%5]
+function convert_pos_from_id(id) {
+    return [Math.floor(id / 5), id % 5]
 }
 
 
@@ -111,22 +116,45 @@ function check_bingo() {
     return bingo
 }
 
-function check_reach() {
-    REACH = [];
-    for (var i = 0; i < HEIGHT; i++) {
+function check_reach() {//リーチかどうかのチェック
+    for (var i = 0; i < HEIGHT; i++) {//縦のチェック
         push_count = 0;
         for (var j = 0; j < WEIGHT; j++) {
+            REACH_COLUMN[i][j] = false;
             if (BOARD[i][j]) {
                 push_count++;
-                REACH[i][j] = false;
             }
         }
         for (var j = 0; j < WEIGHT; j++) {
-            if (push_count == 4) {
-                REACH[i][j] = true;
+            if (push_count == 4 && BOARD[i][j] == false) {
+                REACH_COLUMN[i][j] = true;
             }
         }
     }
+    for (var i = 0; i < WEIGHT; i++) {//横のチェック
+        push_count = 0;
+        for (var j = 0; j < HEIGHT; j++) {
+            REACH_ROW[j][i] = false;
+            if (BOARD[j][i]) {
+                push_count++;
+            }
+        }
+        for (var j = 0; j < HEIGHT; j++) {
+            if (push_count == 4 && BOARD[j][i] == false) {
+                REACH_ROW[j][i] = true;
+            }
+        }
+    }
+    for (var i = 0; i < HEIGHT; i++) {
+        for (var j = 0; j < WEIGHT; j++) {
+            if (REACH_COLUMN[i][j] || REACH_ROW[i][j]) {
+                REACH[i][j] = true;
+            } else {
+                REACH[i][j] = false;
+            }
+        }
+    }
+
 }
 function get_query() {
     var query = window.location.search;
@@ -138,7 +166,7 @@ function get_query() {
     }
     return result;
 }
-function makeTable() {
+function make_table() {
     var table = document.createElement('table');
     table.className = 'bingo-card';
     for (var i = 0; i < HEIGHT; i++) {
@@ -148,9 +176,9 @@ function makeTable() {
             var td = document.createElement('td');
             td.textContent = NUM[i][j];
             td.className = "bingo-cell"
-            td.id=i*5+j
+            td.id = i * 5 + j
             // td.style.backgroundColor = '#FF0000'
-            td.onclick = function(){switch_cell(this.id,true)};
+            td.onclick = function () { switch_cell(this.id, true) };
             tr.appendChild(td);
         }
         table.appendChild(tr);
@@ -159,13 +187,30 @@ function makeTable() {
     card.after(table);
 }
 
-function loadTable(){
-    table=document.getElementById("bingo-card");
+function load_reach() {
+    // table=document.getElementById("bingo-card");
+    check_reach()
+    console.log(REACH_COLUMN[0])
+    console.log(REACH_COLUMN[1])
+    console.log(REACH_COLUMN[2])
+    console.log(REACH_COLUMN[3])
+    console.log(REACH_COLUMN[4])
     for (var i = 0; i < HEIGHT; i++) {
         for (var j = 0; j < WEIGHT; j++) {
-            td=table.rows[i].cells[j];
-            if(BOARD[i][j]){
-                //
+            if (BOARD[i][j]) {
+                // if (td.classList.contains("bingo-cell-reach")) {
+                    // document.getElementById(i * 5 + j).classList.remove("bingo-cell-reach");
+                // }
+            } else {
+                td = document.getElementById(i * 5 + j)
+                if (REACH_COLUMN[i][j]) {
+                    td.classList.add("bingo-cell-reach");
+                    // table.rows[i].cells[j].classList.add("bingo-cell-reach");
+                }
+                else if (REACH_COLUMN[i][j] == false && td.classList.contains("bingo-cell-reach")) {
+                    td.classList.remove("bingo-cell-reach");
+                    // table.rows[i].cells[j].classList.remove("bingo-cell-reach");
+                }
             }
         }
     }
@@ -181,6 +226,6 @@ if (query["?card"] == undefined) {
 nums = split_query(query["?card"]);
 nums = decode_query(nums)
 set_board(nums)
-makeTable(nums)
+make_table(nums)
 
 
