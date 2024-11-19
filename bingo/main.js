@@ -1,29 +1,31 @@
 BOARD = [];//穴が空いているの場所を表す
-WEIGHT = 5//横
-HEIGHT = 5//縦
+SIDES = 5//横
+SIDES = 5//縦
 NUM = [];//数字を格納する
 REACH_COLUMN = [];//縦に見たときにリーチの場所を示す
 REACH_ROW = [];//横に見たときにリーチの場所を示す
-REACH= [];//リーチの場所を表す
+REACH = [];//リーチの場所を表す
 
 //ボード生成
-for (var i = 0; i < HEIGHT; i++) {
+for (var i = 0; i < SIDES; i++) {
     BOARD[i] = [];
     REACH_COLUMN[i] = [];
     REACH_ROW[i] = [];
+    REACH[i] = [];
     NUM[i] = [];
-    for (var j = 0; j < WEIGHT; j++) {
+    for (var j = 0; j < SIDES; j++) {
         BOARD[i][j] = false;
         REACH_COLUMN[i][j] = false;
         REACH_ROW[i][j] = false;
+        REACH[i][j] = false;
         NUM[i][j] = 0;
     }
 }
 function set_board(nums) {
     is_half = 0;
-    for (var i = 0; i < HEIGHT; i++) {
+    for (var i = 0; i < SIDES; i++) {
         temp = [];
-        for (var j = 0; j < WEIGHT; j++) {
+        for (var j = 0; j < SIDES; j++) {
             if (i * 5 + j == 12) {
                 temp[j] = 'FREE';
                 is_half = 1;
@@ -95,18 +97,18 @@ function convert_pos_from_id(id) {
 
 function check_bingo() {
     bingo = 0
-    for (var i = 0; i < HEIGHT; i++) {
+    for (var i = 0; i < SIDES; i++) {
         is_bingo = true;//ビンゴかどうかを確認するための変数
-        for (var j = 0; j < WEIGHT; j++) {
+        for (var j = 0; j < SIDES; j++) {
             is_bingo = BOARD[i][j] & is_bingo
         }
         if (is_bingo) {
             bingo++;
         }
     }
-    for (var i = 0; i < WEIGHT; i++) {
+    for (var i = 0; i < SIDES; i++) {
         is_bingo = true;//ビンゴかどうかを確認するための変数
-        for (var j = 0; j < HEIGHT; j++) {
+        for (var j = 0; j < SIDES; j++) {
             is_bingo = BOARD[j][i] & is_bingo
         }
         if (is_bingo) {
@@ -117,44 +119,56 @@ function check_bingo() {
 }
 
 function check_reach() {//リーチかどうかのチェック
-    for (var i = 0; i < HEIGHT; i++) {//縦のチェック
+    for (var i = 0; i < SIDES; i++) {//縦のチェック
         push_count = 0;
-        for (var j = 0; j < WEIGHT; j++) {
-            REACH_COLUMN[i][j] = false;
+        for (var j = 0; j < SIDES; j++) {
+            REACH[i][j] = false;
             if (BOARD[i][j]) {
                 push_count++;
             }
         }
-        for (var j = 0; j < WEIGHT; j++) {
+        for (var j = 0; j < SIDES; j++) {
             if (push_count == 4 && BOARD[i][j] == false) {
-                REACH_COLUMN[i][j] = true;
+                REACH[i][j] = true;
             }
         }
     }
-    for (var i = 0; i < WEIGHT; i++) {//横のチェック
+    for (var i = 0; i < SIDES; i++) {//横のチェック
         push_count = 0;
-        for (var j = 0; j < HEIGHT; j++) {
-            REACH_ROW[j][i] = false;
+        for (var j = 0; j < SIDES; j++) {
+            // REACH_ROW[j][i] = false;
             if (BOARD[j][i]) {
                 push_count++;
             }
         }
-        for (var j = 0; j < HEIGHT; j++) {
+        for (var j = 0; j < SIDES; j++) {
             if (push_count == 4 && BOARD[j][i] == false) {
-                REACH_ROW[j][i] = true;
+                REACH[j][i] = true;
             }
         }
     }
-    for (var i = 0; i < HEIGHT; i++) {
-        for (var j = 0; j < WEIGHT; j++) {
-            if (REACH_COLUMN[i][j] || REACH_ROW[i][j]) {
-                REACH[i][j] = true;
-            } else {
-                REACH[i][j] = false;
-            }
+    push_count = 0;
+    for (var i = 0; i < SIDES; i++) {
+        if (BOARD[i][i]) {
+            push_count++;
         }
     }
-
+    for (var i = 0; i < SIDES; i++) {
+        if (push_count == 4 && BOARD[i][i] == false) {
+            REACH[i][i] = true;
+        }
+    }
+    push_count = 0;
+    for (var i = 0; i < SIDES; i++) {
+        if (BOARD[i][SIDES-i-1]) {
+            push_count++;
+        }
+    }
+    for (var i = 0; i < SIDES; i++) {
+        if (push_count == 4 && BOARD[SIDES-i-1][i] == false) {
+            REACH[SIDES-i-1][i] = true;
+        }
+    }
 }
 function get_query() {
     var query = window.location.search;
@@ -169,10 +183,10 @@ function get_query() {
 function make_table() {
     var table = document.createElement('table');
     table.className = 'bingo-card';
-    for (var i = 0; i < HEIGHT; i++) {
+    for (var i = 0; i < SIDES; i++) {
         var tr = document.createElement('tr');
         // tr.className="bingo-card"
-        for (var j = 0; j < WEIGHT; j++) {
+        for (var j = 0; j < SIDES; j++) {
             var td = document.createElement('td');
             td.textContent = NUM[i][j];
             td.className = "bingo-cell"
@@ -190,24 +204,24 @@ function make_table() {
 function load_reach() {
     // table=document.getElementById("bingo-card");
     check_reach()
-    console.log(REACH_COLUMN[0])
-    console.log(REACH_COLUMN[1])
-    console.log(REACH_COLUMN[2])
-    console.log(REACH_COLUMN[3])
-    console.log(REACH_COLUMN[4])
-    for (var i = 0; i < HEIGHT; i++) {
-        for (var j = 0; j < WEIGHT; j++) {
+    console.log(REACH[0])
+    console.log(REACH[1])
+    console.log(REACH[2])
+    console.log(REACH[3])
+    console.log(REACH[4])
+    for (var i = 0; i < SIDES; i++) {
+        for (var j = 0; j < SIDES; j++) {
             if (BOARD[i][j]) {
                 // if (td.classList.contains("bingo-cell-reach")) {
-                    // document.getElementById(i * 5 + j).classList.remove("bingo-cell-reach");
+                // document.getElementById(i * 5 + j).classList.remove("bingo-cell-reach");
                 // }
             } else {
                 td = document.getElementById(i * 5 + j)
-                if (REACH_COLUMN[i][j]) {
+                if (REACH[i][j]) {
                     td.classList.add("bingo-cell-reach");
                     // table.rows[i].cells[j].classList.add("bingo-cell-reach");
                 }
-                else if (REACH_COLUMN[i][j] == false && td.classList.contains("bingo-cell-reach")) {
+                else if (REACH[i][j] == false && td.classList.contains("bingo-cell-reach")) {
                     td.classList.remove("bingo-cell-reach");
                     // table.rows[i].cells[j].classList.remove("bingo-cell-reach");
                 }

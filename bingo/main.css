@@ -90,9 +90,9 @@ a.btn--circle:hover {
     border: 1px solid #ccc;
     font-size: 58px;
 }
-.bingo-cell-open {
-    background-color: #5cec30;
-}
 .bingo-cell-reach {
     background-color: #ece930;
+}
+.bingo-cell-open {
+    background-color: #5cec30;
 }
