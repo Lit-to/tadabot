@@ -62,17 +62,6 @@ function decode_query(query) {
     return result;
 }
 
-function switch_cell(id) {
-    td = document.getElementById(id);
-    if (td.classList.contains("bingo-cell-open")) {
-        close_cell(td);
-    } else {
-        open_cell(td);
-    }
-    load_reach();
-    td.onclick = function () { return switch_cell(this.id) };
-}
-
 function open_cell(td) {
     console.log("aaaaa<", td)
     pos = convert_pos_from_id(parseInt(td.id))
@@ -97,6 +86,7 @@ function convert_pos_from_id(id) {
 
 function check_bingo() {
     bingo = 0
+    is_bingo=true
     for (var i = 0; i < SIDES; i++) {
         is_bingo = true;//ビンゴかどうかを確認するための変数
         for (var j = 0; j < SIDES; j++) {
@@ -114,6 +104,20 @@ function check_bingo() {
         if (is_bingo) {
             bingo++;
         }
+    }
+    is_bingo=true;
+    for (var i=0;i<SIDES;i++){
+        is_bingo=BOARD[i][i]&is_bingo
+    }
+    if (is_bingo) {
+        bingo++;
+    }
+    is_bingo=true;
+    for (var i=0;i<SIDES;i++){
+        is_bingo=BOARD[i][SIDES-i-1]&is_bingo
+    }
+    if (is_bingo) {
+        bingo++;
     }
     return bingo
 }
@@ -204,11 +208,6 @@ function make_table() {
 function load_reach() {
     // table=document.getElementById("bingo-card");
     check_reach()
-    console.log(REACH[0])
-    console.log(REACH[1])
-    console.log(REACH[2])
-    console.log(REACH[3])
-    console.log(REACH[4])
     for (var i = 0; i < SIDES; i++) {
         for (var j = 0; j < SIDES; j++) {
             if (BOARD[i][j]) {
@@ -229,6 +228,21 @@ function load_reach() {
         }
     }
 }
+
+function switch_cell(id) {
+    td = document.getElementById(id);
+    if (td.classList.contains("bingo-cell-open")) {
+        close_cell(td);
+    } else {
+        open_cell(td);
+    }
+    load_reach();
+    bingo = check_bingo();
+    p=document.getElementById("bingo-count");
+    p.textContent=bingo+" BINGO!!";
+    td.onclick = function () { return switch_cell(this.id) };
+}
+
 
 // nums = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x']
 query = get_query()
