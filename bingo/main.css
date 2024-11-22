@@ -1,98 +1,77 @@
-*,
-*:before,
-*:after {
-    -webkit-box-sizing: inherit;
-    box-sizing: inherit;
-}
-
-html {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    font-size: 62.5%;
-}
-
+/* main.css */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
+    background-color: #121212; /* ダークモードの背景 */
+    color: #ffffff; /* 文字色を明るく */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 .container {
-    max-width: 800px;
-    margin: 50px auto;
+    text-align: center;
+    background-color: #28292e; /* コンテナ背景色を少し明るく */
     padding: 20px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 h1 {
-    text-align: center;
+    font-size: 24px;
+    color: #ffffff;
+    margin-bottom: 20px;
 }
 
-
-.btn,
-a.btn,
-button.btn {
-    font-size: 1.6rem;
-    font-weight: 700;
-    line-height: 1.5;
-    position: relative;
-    display: inline-block;
-    padding: 1rem 4rem;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-transition: all 0.3s;
-    transition: all 0.3s;
-    text-align: center;
-    vertical-align: middle;
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    color: #212529;
-    border-radius: 0.5rem;
-}
-
-/*色や主な共通部分は省略*/
-
-a.btn--circle {
-    border-radius: 50%;
-    line-height: 100px;
-    width: 100px;
-    height: 100px;
-    padding: 0;
-    -webkit-box-shadow: 0 5px 0 #e6d900;
-    box-shadow: 0 5px 0 #e6d900;
-}
-
-a.btn--circle:hover {
-    -webkit-transform: translate(0, 3px);
-    transform: translate(0, 3px);
-    -webkit-box-shadow: 0 2px 0 #e6d900;
-    box-shadow: 0 2px 0 #e6d900;
+#bingo-count {
+    font-size: 18px;
+    color: #ff9800; /* アクセントカラー */
+    margin: 0;
 }
 
 .bingo-card {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    /* gap: 10px; */
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 300px;
+    height: 300px;
+}
+
+.bingo-card tr {
+    height: 20%;
 }
 
 .bingo-cell {
-    /* width: 60px; */
-    height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #e0e0e0;
-    border: 1px solid #ccc;
-    font-size: 58px;
+    border: 2px solid #333; /* 枠線を目立たせる */
+    width:20%;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
+    font-weight: bold;
+    color: #e0e0e0; /* セル文字色 */
+    background-color: rgb(50, 50, 71); /* セル背景色 */
+    cursor: pointer;
+    transition: filter 0.3s,background-color 0.3s, color 0.3s; /* スムーズな色変更 */
 }
-.bingo-cell-reach {
-    background-color: #ece930;
+.bingo-cell-reach{
+    background-color: #ff9900a2;  /* リーチセルの背景 */
+    color: white;
+    font-weight: bold;
 }
+
+
 .bingo-cell-open {
-    background-color: #5cec30;
+    background-color:#65963dbe; /* 選択済みセルの背景 */
+    color: white;
+}
+.bingo-cell:hover {
+    filter:brightness(150%); /*ホバー時の背景*/
+    
+    /*background-color: #424242; /*ホバー時の背景 */
+}
+.bingo-cell#12 {
+    background-color: #fbc12d91; /* FREEセルの特別な背景 */
+    color: #000;
+    font-weight: bold;
 }

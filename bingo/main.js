@@ -36,7 +36,6 @@ function set_board(nums) {
         }
         NUM[i] = temp;
     }
-    // NUM.insert(2, 'FREE');
 }
 
 function split_query(query) {
