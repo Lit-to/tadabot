@@ -456,7 +456,7 @@ async def notice(interaction: discord.Interaction):
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/bingo\"")
     #とりま1~100まで固定
-    num_list=bingo.bingo(1,100)
+    num_list=bingo.bingo(1,75)
     await interaction.response.defer(thinking=True)
     # await interaction.followup.send(str(num_list).replace(" ",""))
     user_name=interaction.user.display_name
