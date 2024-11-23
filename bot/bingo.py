@@ -43,7 +43,7 @@ def runLength(s=str or list) -> str: #ランレングス圧縮
 
 def decode(key):
     alp = "abcdefghijklmnopqrstuvwxyz"
-    return (alp[key[0]]) * 26 + alp[key[1]]
+    return (alp.index(key[0])) * 26 + alp.index(key[1])
 
 
 def card(numlist):

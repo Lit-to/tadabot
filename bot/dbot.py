@@ -519,7 +519,7 @@ async def test(interaction:discord.Interaction,char:str):
         if char[i].isalpha()==False:
             await interaction.response.send_message("デコードできません！",ephemeral=True)
             return
-    await interaction.response.send_message("その文字をデコードすると"+str(bingo.decode([char]))+"です！")
+    await interaction.response.send_message("その文字をデコードすると"+str(bingo.decode(char))+"です！")
 
 
 
