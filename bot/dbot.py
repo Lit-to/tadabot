@@ -271,7 +271,7 @@ class QuestionAdd(discord.ui.Modal):
 def getAnswer(title):
     c=nazo.open_file()
     return nazo.get_answer(title,c[0])
-with open(os.path.join("bot","config.txt"),mode="r",encoding="utf-8") as f:
+with open(os.path.join("config.txt"),mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
     token=token[1]
     status_message=f.readline().split(":")[1]
@@ -460,7 +460,7 @@ async def notice(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
     # await interaction.followup.send(str(num_list).replace(" ",""))
     await interaction.followup.send("[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+interaction.user.display_name+")")
-    await interaction.followup.send(file=discord.File(os.path.join("bot","work.jpg")))
+    await interaction.followup.send(file=discord.File(os.path.join("work.jpg")))
 
 @tree.command(name='exit', description='ばいばーい')
 async def exits(interaction: discord.Interaction):
