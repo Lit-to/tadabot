@@ -256,7 +256,7 @@ if (query["?icon"] == undefined) {
     query["?icon"] = "https://cdn.discordapp.com/attachments/379156047253733409/1309918751046504538/egg_step_4.png?ex=67435467&is=674202e7&hm=a6fa9721597830855144da386c65994ea27293b6178c70b4890f1a85608cd423&"
 }
 user_name=decodeURI(query["?name"])
-
+user_name=user_name.substring(0,5)
 if (user_name == undefined) {
     user_name = "無名たこ焼き"
 }
