@@ -19,6 +19,21 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
+.top-box {
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.top-inner-box {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.icon{
+    border-radius: 10px;
+    margin-right: 10px;
+}
 h1 {
     font-size: 24px;
     color: #ffffff;
@@ -30,9 +45,7 @@ h1 {
     color: #ff9800; /* アクセントカラー */
     margin: 0;
 }
-.space {
-    margin-left: 80px;
-}
+
 .bingo-card {
     margin: 0 auto;
     border-collapse: collapse;

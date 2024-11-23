@@ -47,7 +47,6 @@ def decode(key):
 
 
 def card(numlist):
-    print(numlist[:24])
     return compression(numlist[:24])
 
 
