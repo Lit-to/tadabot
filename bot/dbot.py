@@ -460,7 +460,7 @@ async def notice(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
     # await interaction.followup.send(str(num_list).replace(" ",""))
     await interaction.followup.send("[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+interaction.user.display_name+")")
-    await interaction.followup.send(file=discord.File(os.path.join("bot","work.jpg")))
+    await interaction.followup.send(file=discord.File(os.path.join("work.jpg")))
 
 @tree.command(name='exit', description='ばいばーい')
 async def exits(interaction: discord.Interaction):
