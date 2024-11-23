@@ -40,6 +40,12 @@ def runLength(s=str or list) -> str: #ランレングス圧縮
     return "".join(result)
 
 
+
+def decode(key):
+    alp = "abcdefghijklmnopqrstuvwxyz"
+    return (alp[key[0]]) * 26 + alp[key[1]]
+
+
 def card(numlist):
     print(numlist[:24])
     return compression(numlist[:24])
