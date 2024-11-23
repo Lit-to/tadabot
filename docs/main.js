@@ -251,7 +251,7 @@ if (query["?card"] == undefined) {
 user_name=decodeURI(query["?name"])
 
 if (user_name == undefined) {
-    user_name["?name"] = "無名たこ焼き"
+    user_name = "無名たこ焼き"
 }
 nums = split_query(query["?card"]);
 nums = decode_query(nums)
