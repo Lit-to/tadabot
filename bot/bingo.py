@@ -77,7 +77,7 @@ def bingo(min,max):
     return card(numlist[::-1])
 
 if __name__=="__main__":
-    print(bingo(1,100))
+    print(bingo(1,75))
 
 
 
