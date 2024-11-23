@@ -253,14 +253,14 @@ if (query["?card"] == undefined) {
     query["?card"] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 }
 if (query["?icon"] == undefined) {
-    query["?icon"] = "712105359673917480/656c70e3c7e1ccd9cde9286456cb6b3b.png"
+    query["?icon"] = "https://cdn.discordapp.com/attachments/379156047253733409/1309918751046504538/egg_step_4.png?ex=67435467&is=674202e7&hm=a6fa9721597830855144da386c65994ea27293b6178c70b4890f1a85608cd423&"
 }
 user_name=decodeURI(query["?name"])
 
 if (user_name == undefined) {
     user_name = "無名たこ焼き"
 }
-set_icon("https://cdn.discordapp.com/avatars/"+query["?icon"])
+set_icon(query["?icon"])
 nums = split_query(query["?card"]);
 nums = decode_query(nums)
 set_board(nums)

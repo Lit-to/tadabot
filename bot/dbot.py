@@ -461,7 +461,9 @@ async def notice(interaction: discord.Interaction):
     # await interaction.followup.send(str(num_list).replace(" ",""))
     user_name=interaction.user.display_name
     user_name=user_name.replace(" ","")
-    await interaction.followup.send("[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+user_name+")")
+    # icon_file="/".join(interaction.user.display_avatar.url.split("/")[4:])
+    bingo_url="[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+user_name+"&?icon="+interaction.user.display_avatar.url+")"
+    await interaction.followup.send(bingo_url)
     await interaction.followup.send(file=discord.File(os.path.join("work.jpg")))
 
 @tree.command(name='exit', description='ばいばーい')
