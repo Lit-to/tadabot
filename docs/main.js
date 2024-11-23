@@ -248,12 +248,14 @@ query = get_query()
 if (query["?card"] == undefined) {
     query["?card"] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 }
-if (query["?name"] == undefined) {
-    query["?name"] = "無名たこ焼き"
+user_name=decodeURI(query["?name"])
+
+if (user_name == undefined) {
+    user_name["?name"] = "無名たこ焼き"
 }
 nums = split_query(query["?card"]);
 nums = decode_query(nums)
 set_board(nums)
-make_table(query["?name"])
+make_table(user_name)
 
 
