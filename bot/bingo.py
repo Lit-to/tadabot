@@ -51,10 +51,10 @@ def bingo(min,max):
         numlist.append(i)
         random.shuffle(numlist)
     numlist_temp=numlist.copy()
-    shutil.copy(os.path.join("bot","bingo.jpg"),os.path.join("bot","work.jpg"))
-    img=Image.open(os.path.join("bot","work.jpg"))
+    shutil.copy(os.path.join("bingo.jpg"),os.path.join("work.jpg"))
+    img=Image.open(os.path.join("work.jpg"))
     draw=ImageDraw.Draw(img)
-    font=ImageFont.truetype(os.path.join("bot","zenmaru.ttf"),80)
+    font=ImageFont.truetype(os.path.join("zenmaru.ttf"),80)
     pos=[60,205]
     for i in range(1,26):
         if i!=13:
@@ -68,7 +68,7 @@ def bingo(min,max):
                 pos[0]=60-130# 改行部分
                 pos[1]+=130
             pos[0]+=130
-    img.save(os.path.join("bot","work.jpg"))
+    img.save(os.path.join("work.jpg"))
     return card(numlist[::-1])
 
 if __name__=="__main__":
