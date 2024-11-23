@@ -30,7 +30,9 @@ h1 {
     color: #ff9800; /* アクセントカラー */
     margin: 0;
 }
-
+.space {
+    margin-left: 80px;
+}
 .bingo-card {
     margin: 0 auto;
     border-collapse: collapse;
@@ -55,23 +57,18 @@ h1 {
     transition: filter 0.3s,background-color 0.3s, color 0.3s; /* スムーズな色変更 */
 }
 .bingo-cell-reach{
-    background-color: #ff9900a2;  /* リーチセルの背景 */
-    color: white;
+    background-color: #ffd82af8;  /* リーチセルの背景 */
+    color: #121212;
     font-weight: bold;
 }
 
 
 .bingo-cell-open {
-    background-color:#65963dbe; /* 選択済みセルの背景 */
-    color: white;
+    background-color:#3ed331fb; /* 選択済みセルの背景 */
+    color: #121212;
 }
 .bingo-cell:hover {
     filter:brightness(150%); /*ホバー時の背景*/
     
     /*background-color: #424242; /*ホバー時の背景 */
-}
-.bingo-cell#12 {
-    background-color: #fbc12d91; /* FREEセルの特別な背景 */
-    color: #000;
-    font-weight: bold;
 }

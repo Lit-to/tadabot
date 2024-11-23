@@ -183,7 +183,7 @@ function get_query() {
     }
     return result;
 }
-function make_table() {
+function make_table(name) {
     var table = document.createElement('table');
     table.className = 'bingo-card';
     for (var i = 0; i < SIDES; i++) {
@@ -201,6 +201,7 @@ function make_table() {
         table.appendChild(tr);
     }
     var card = document.getElementById('bingo-card-outline');
+    document.getElementById("name").textContent = name;
     card.after(table);
 }
 
@@ -243,16 +244,16 @@ function switch_cell(id) {
 }
 
 
-// nums = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x']
 query = get_query()
-// set_board(nums["?card"])
-// query=decode_cell(query)
 if (query["?card"] == undefined) {
     query["?card"] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+if (query["?name"] == undefined) {
+    query["?name"] = "無名たこ焼き"
 }
 nums = split_query(query["?card"]);
 nums = decode_query(nums)
 set_board(nums)
-make_table(nums)
+make_table(query["?name"])
 
 
