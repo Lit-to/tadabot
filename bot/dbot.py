@@ -508,6 +508,18 @@ async def test(interaction: discord.Interaction):
             await interaction.response.send_message(interaction.user.voice.channel.name+"のロックを解除しました",ephemeral=False)
             return
 
+@tree.command(name="decode",description="文字列をデコードするよ")
+@app_commands.describe(char="エンコードする文字")
+async def test(interaction:discord.Interaction,char:str):
+    fo.printf(interaction.user.name,"did \"/decode\":"+char)
+    if len(char)!=2:
+        await interaction.response.send_message("デコードできません！",ephemeral=True)
+        return
+    for i in range(len(char)):
+        if char[i].isalpha()==False:
+            await interaction.response.send_message("デコードできません！",ephemeral=True)
+            return
+    await interaction.response.send_message("その文字をデコードすると"+str(bingo.decode(char))+"です！")
 
 
 

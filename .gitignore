@@ -7,3 +7,5 @@ key.txt
 *.jpg
 !bingo.jpg
 *.csv
+bot/__pycache__/
+
