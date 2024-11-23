@@ -243,16 +243,24 @@ function switch_cell(id) {
     td.onclick = function () { return switch_cell(this.id) };
 }
 
+function set_icon(icon){
+    document.getElementById("icon").src=icon;
+}
+
 
 query = get_query()
 if (query["?card"] == undefined) {
     query["?card"] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}
+if (query["?icon"] == undefined) {
+    query["?icon"] = "712105359673917480/656c70e3c7e1ccd9cde9286456cb6b3b.png"
 }
 user_name=decodeURI(query["?name"])
 
 if (user_name == undefined) {
     user_name = "無名たこ焼き"
 }
+set_icon("https://cdn.discordapp.com/avatars/"+query["?icon"])
 nums = split_query(query["?card"]);
 nums = decode_query(nums)
 set_board(nums)
