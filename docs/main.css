@@ -1,0 +1,74 @@
+/* main.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #121212; /* ダークモードの背景 */
+    color: #ffffff; /* 文字色を明るく */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    text-align: center;
+    background-color: #28292e; /* コンテナ背景色を少し明るく */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    font-size: 24px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+#bingo-count {
+    font-size: 18px;
+    color: #ff9800; /* アクセントカラー */
+    margin: 0;
+}
+.space {
+    margin-left: 80px;
+}
+.bingo-card {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 300px;
+    height: 300px;
+}
+
+.bingo-card tr {
+    height: 20%;
+}
+
+.bingo-cell {
+    border: 2px solid #333; /* 枠線を目立たせる */
+    width:20%;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 18px;
+    font-weight: bold;
+    color: #e0e0e0; /* セル文字色 */
+    background-color: rgb(50, 50, 71); /* セル背景色 */
+    cursor: pointer;
+    transition: filter 0.3s,background-color 0.3s, color 0.3s; /* スムーズな色変更 */
+}
+.bingo-cell-reach{
+    background-color: #ffd82af8;  /* リーチセルの背景 */
+    color: #121212;
+    font-weight: bold;
+}
+
+
+.bingo-cell-open {
+    background-color:#3ed331fb; /* 選択済みセルの背景 */
+    color: #121212;
+}
+.bingo-cell:hover {
+    filter:brightness(150%); /*ホバー時の背景*/
+    
+    /*background-color: #424242; /*ホバー時の背景 */
+}

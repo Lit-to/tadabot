@@ -5,6 +5,7 @@ import re
 import bingo
 import nazotoki as nazo
 import fileout as fo
+import os
 
 def is_prime(n):
     if n <= 1:
@@ -270,7 +271,7 @@ class QuestionAdd(discord.ui.Modal):
 def getAnswer(title):
     c=nazo.open_file()
     return nazo.get_answer(title,c[0])
-with open("config.txt",mode="r",encoding="utf-8") as f:
+with open(os.path.join("bot","config.txt"),mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
     token=token[1]
     status_message=f.readline().split(":")[1]
@@ -455,17 +456,20 @@ async def notice(interaction: discord.Interaction):
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/bingo\"")
     #とりま1~100まで固定
-    bingo.bingo(1,100)
-    await interaction.response.send_message(file=discord.File("work.jpg"))
+    num_list=bingo.bingo(1,100)
+    await interaction.response.defer(thinking=True)
+    # await interaction.followup.send(str(num_list).replace(" ",""))
+    await interaction.followup.send("[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+interaction.user.display_name+")")
+    await interaction.followup.send(file=discord.File(os.path.join("bot","work.jpg")))
 
 @tree.command(name='exit', description='ばいばーい')
 async def exits(interaction: discord.Interaction):
     fo.printf(interaction.user.name,"did \"/exit\":")
-    if interaction.user.id==int(712105359673917480):
+    if interaction.user.id==int(379155307546542081):
         await interaction.response.send_message("ばいばーい",ephemeral=True)
         await client.close()
     else:
-        await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！@lit_to を呼んでね",ephemeral=True)
+        await interaction.response.send_message("あぶない！このコマンドはサーバーが爆発します！<@!712105359673917480> を呼んでね")
 
 @tree.command(name='status', description='通話ステータスを変更するよ')
 @app_commands.describe(color="1:赤 2:黄 3:青",input_status="後ろの説明書きを入力してね")
