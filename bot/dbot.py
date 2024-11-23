@@ -5,6 +5,7 @@ import re
 import bingo
 import nazotoki as nazo
 import fileout as fo
+import os
 
 def is_prime(n):
     if n <= 1:
@@ -270,7 +271,7 @@ class QuestionAdd(discord.ui.Modal):
 def getAnswer(title):
     c=nazo.open_file()
     return nazo.get_answer(title,c[0])
-with open("config.txt",mode="r",encoding="utf-8") as f:
+with open(os.path.join("bot","config.txt"),mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
     token=token[1]
     status_message=f.readline().split(":")[1]
@@ -457,8 +458,9 @@ async def notice(interaction: discord.Interaction):
     #とりま1~100まで固定
     num_list=bingo.bingo(1,100)
     await interaction.response.defer(thinking=True)
-    await interaction.followup.send(str(num_list).replace(" ",""))
-    # await interaction.followup.send(file=discord.File("work.jpg"))
+    # await interaction.followup.send(str(num_list).replace(" ",""))
+    await interaction.followup.send("[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+interaction.user.name+")")
+    await interaction.followup.send(file=discord.File(os.path.join("bot","work.jpg")))
 
 @tree.command(name='exit', description='ばいばーい')
 async def exits(interaction: discord.Interaction):
