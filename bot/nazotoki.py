@@ -1,8 +1,8 @@
 import csv
 import os
-path=os.path.join("bot","answers.csv")
+path=os.path.join("answers.csv")
 
-def open_file(path=os.path.join("bot","answers.csv")):
+def open_file(path=path):
     with open(path,mode="r",encoding="UTF-8") as f:
         reader=csv.reader(f)
         contents=[]
@@ -14,7 +14,7 @@ def open_file(path=os.path.join("bot","answers.csv")):
                 titles.add(i[0])
         return contents,titles
 
-def write_file(contents,path="answers.csv"):
+def write_file(contents,path=path):
     with open(path,mode="w",encoding="UTF-8",newline="") as f:
         writer=csv.writer(f)
         for row in contents:

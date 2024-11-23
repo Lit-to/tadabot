@@ -271,7 +271,7 @@ class QuestionAdd(discord.ui.Modal):
 def getAnswer(title):
     c=nazo.open_file()
     return nazo.get_answer(title,c[0])
-with open(os.path.join("bot","config.txt"),mode="r",encoding="utf-8") as f:
+with open(os.path.join("config.txt"),mode="r",encoding="utf-8") as f:
     token=f.readline().split(":")
     token=token[1]
     status_message=f.readline().split(":")[1]
