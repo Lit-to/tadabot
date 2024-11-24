@@ -2,6 +2,13 @@ from PIL import Image,ImageDraw,ImageFont
 import shutil
 import random
 import os
+POOL_PATH="pool.txt"
+def readf():
+    return open(POOL_PATH,"r").read().split(",")[:-1]
+def resetf():
+    open(POOL_PATH,"w").close()
+def printf(s):
+    open(POOL_PATH,"a").write(s+",")
 
 def compression(nums:list) ->str:#数をaa~zzまでの文字列に変換し結合後、ランレングス
     result=[]
@@ -49,12 +56,35 @@ def decode(key):
 def card(numlist):
     return compression(numlist[:24])
 
-
-def bingo(min,max):
-    numlist=list()
+def make_pool(min,max):
+    numlist=[]
     for i in range(min,max+1):
         numlist.append(i)
-        random.shuffle(numlist)
+    random.shuffle(numlist)
+    resetf()
+    register(numlist)
+    return numlist
+
+def register(numlist):
+    resetf()
+    for i in numlist:
+        printf(str(i))
+
+def get_pool():
+    return readf()
+
+def roll():
+    numlist=readf()
+    print(numlist)
+    if len(numlist)==0:
+        return False
+    result=numlist.pop()
+    resetf()
+    register(numlist)
+    return result
+
+def bingo(min,max):
+    numlist=make_pool(min,max)
     numlist_temp=numlist.copy()
     shutil.copy(os.path.join("bingo.jpg"),os.path.join("work.jpg"))
     img=Image.open(os.path.join("work.jpg"))
