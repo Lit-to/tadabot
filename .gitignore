@@ -9,3 +9,4 @@ key.txt
 *.csv
 bot/__pycache__/
 
+bot/pool.txt
