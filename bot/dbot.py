@@ -1,12 +1,8 @@
 import discord
 from discord import app_commands
-import random
-import re
-import bingo
+import random,re,bingo,os,dice
 import nazotoki as nazo
 import fileout as fo
-import os
-
 def is_prime(n):
     if n <= 1:
         return False
@@ -20,161 +16,7 @@ def is_prime(n):
             return False
         i += 6
     return True
-class Dice:
 
-    def do(s):
-        e=Dice.spl(s)
-        f=Dice.clean(e)
-        if f==False:
-            return False
-        if f!=False:
-            rs= Dice.calc(f)
-        ss=str()
-        sd=str()
-        for i in rs[0]:
-            ss+=str(i)
-        for j in rs[2]:
-            sd+=str(j)
-        return ss,rs[1],rs[2]
-
-    def spl(s):
-        a=re.findall(r"\d+|\D",s)
-        return a
-
-    def clean(s):
-        f=list()
-        op=0
-        cl=0
-        for i in s:
-            if f!=[]:
-                if i.isdigit() and type(f[-1])!=int:
-                    pass
-                elif i=="d" and type(f[-1])==int:
-                    pass
-                elif i in "d+-*/" and f[-1]!="d+-*/":
-                    pass
-                elif i =="(":
-                    op+=1
-                elif i ==")":
-                    op-=1
-                    if op<0:
-                        fo.printf("カッコがおかしいよ")
-                        return False
-                else:
-                    fo.printf("入力がおかしいよ")
-                    return False
-            if i.isdigit():
-                f.append(int(i))
-            else:
-                f.append(i)
-        if op!=0:
-            fo.printf("カッコの数がおかしいよ")
-            return False
-        return f
-
-    def calc(sl):
-        d,dlog=[],[]
-        if "d" in sl:
-            sl,dlog=Dice.dc(sl)
-            d=sl.copy()
-        if "(" in sl:
-            sl=Dice.pri(sl)
-        if "*" in sl or "/" in sl:
-            sl=Dice.prd(sl)
-        c=Dice.plm(sl)
-        return d,c,dlog
-
-    def roll(n,s):
-        r=int()
-        a=list()
-        for i in range(n):
-            a.append(random.randint(1,s))
-        r=sum(a)
-        return r,a
-
-    def dc(sl):
-        c=list()
-        dlog=[]
-        skip=0
-        i=0
-        while i<len(sl):
-            if skip==1:
-                skip=0
-            elif sl[i]=="d":
-                drs=Dice.roll(sl[i-1],sl[i+1])
-                c[-1]=drs[0]
-                dlog.append(drs[1])
-                skip=1
-            else:
-                c.append(sl[i])
-            i+=1
-        return c,dlog
-
-    def pri(sl):
-        open=[]
-        close=[]
-        i=0
-        c=list()
-        while i<len(sl):
-            if sl[i]=="(":
-                open.append(i)
-            elif sl[i]==")":
-                close=i
-                k=Dice.calc(sl[open.pop()+1:close])
-                c.append(k[1])
-            elif open==[]:
-                c.append(sl[i])
-            i+=1
-        return c
-
-    def prd(sl):
-        i=0
-        c=list()
-        skip=0
-        while i<len(sl):
-            if skip==1:
-                skip=0
-                pass
-            elif sl[i]=="*":
-                c[-1]=c[-1]*sl[i+1]
-                skip=1
-            elif sl[i]=="/":
-                c[-1]=c[-1]//sl[i+1]
-                skip=1
-            else:
-                c.append(sl[i])
-            i+=1
-        return c
-
-    def plm(sl):
-        i=0
-        c=int()
-        j=None
-        for i in sl:
-            if type(i)==int:
-                if j=="-":
-                    j=i*-1
-                else:
-                    j=i
-                c+=j
-            j=i
-        return c
-
-    def __init__(self):
-        super().__init__(
-            title="謎解きフォーム",
-            timeout=None
-        )
-        
-        self.answer = discord.ui.TextInput(
-            label="答えを入力してね！",
-            style=discord.TextStyle.short,
-            placeholder="",
-            required=True
-        )
-        self.add_item(self.answer)
-    async def on_submit(self, interaction: discord.Interaction) -> None:
-        return await interaction.response.send_message("あなたが入力したものはこれですね！\n"+self.answer.value)
 def check_answer(title:str,answer:str,user:str):
     data,ids=nazo.open_file()
     rs=nazo.check_answer(title,answer,data)
@@ -237,6 +79,13 @@ def setanswer(title:str,turn=False):
     view = discord.ui.View()
     view.add_item(button)
     return view
+
+def bingo_button(disable=False):
+    button = discord.ui.Button(label="ビンゴ開始！",style=discord.ButtonStyle.success,custom_id="B_bingo_start",disabled=disable)
+    view = discord.ui.View()
+    view.add_item(button)
+    return view
+
 class QuestionAdd(discord.ui.Modal):
     def __init__(self):
         super().__init__(
@@ -304,7 +153,12 @@ async def on_button_click(interaction:discord.Interaction):
     fo.printf(interaction.user.name,"did \"Interaction\":",interaction.data["custom_id"])
     custom_id = interaction.data["custom_id"]
     #ここから下に書く
-    if custom_id[0]=="!":
+    if custom_id[0]=="B":
+        bingo.make_pool(1,75)
+        await interaction.response.defer()
+        await interaction.followup.edit_message(message_id=interaction.message.id,view=bingo_button(True))
+        await interaction.followup.send("# ビンゴを開始しました！\n-    ``/bingo``でカードを作ってね！\n-     ``/roll``で次の数字を出します。\n-    ``/bingo log``で現在出た数を表示します。")
+    elif custom_id[0]=="!":
         title=custom_id[1:]
         await interaction.response.send_message(title+"の答えは:**"+getAnswer(title)+"**でした！！",ephemeral=True)    
     elif custom_id[0]=="?":
@@ -316,6 +170,7 @@ async def on_button_click(interaction:discord.Interaction):
             await interaction.response.send_modal(Answer(custom_id))
         else:
             await interaction.response.send_message("問題が削除されたか、未登録かも！りっとーに助けを求めてね",ephemeral=True)
+
 @client.event
 async def on_voice_state_update(member, before, after):
     if before.channel == after.channel:
@@ -369,7 +224,7 @@ async def answer(interaction: discord.Interaction,command:str="check",title:str=
 @tree.command(name='r', description='ダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction,input_dice:str="1d100"):
-    rs=Dice.do(input_dice)
+    rs=dice.do(input_dice)
     fo.printf(interaction.user.name,"did \"/r\":",*rs)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
@@ -379,7 +234,7 @@ async def test(interaction: discord.Interaction,input_dice:str="1d100"):
 
 @tree.command(name='ohuro', description='おふろのおんどは1d100度！')
 async def test(interaction: discord.Interaction):
-    rs=Dice.do("1d100")
+    rs=dice.do("1d100")
     fo.printf(interaction.user.name,"did \"/ohuro\":",*rs)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
@@ -390,7 +245,7 @@ async def test(interaction: discord.Interaction):
 @tree.command(name='rs', description='シークレットダイスを振るよ')
 @app_commands.describe(input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ")
 async def test(interaction: discord.Interaction,input_dice:str):
-    rs=Dice.do(input_dice)
+    rs=dice.do(input_dice)
     fo.printf(interaction.user.name,"did \"/rs\":",*rs)
     if rs==False:
         await interaction.response.send_message('入力がおかしいよ')
@@ -452,19 +307,40 @@ async def notice(interaction: discord.Interaction):
     await interaction.response.send_message("そんなぁ！")
 
 
-@tree.command(name='bingo', description='ビンゴカードを出すよ')
+@tree.command(name='bingo', description='ビンゴに関するコマンドです')
+@app_commands.describe(operation="card/log/start")
+async def notice(interaction: discord.Interaction,operation:str="card"):
+    if operation=="card":
+        fo.printf(interaction.user.name,"did \"/bingo\"")
+        #とりま1~100まで固定
+        num_list=bingo.bingo(1,75)
+        await interaction.response.defer(thinking=True)
+        # await interaction.followup.send(str(num_list).replace(" ",""))
+        user_name=interaction.user.display_name
+        user_name=user_name.replace(" ","")
+        # icon_file="/".join(interaction.user.display_avatar.url.split("/")[4:])
+        bingo_url="[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+user_name+"&?icon="+interaction.user.display_avatar.url+")"
+        await interaction.followup.send(bingo_url)
+        await interaction.followup.send(file=discord.File(os.path.join("work.jpg")))
+    elif operation=="log":
+        await interaction.response.send_message("現在のビンゴの数は"+str(sorted(bingo.get_pool())),ephemeral=False)
+    elif operation=="start":
+        await interaction.response.send_message("ボタンを押して開始！間違えた場合はこっそりメッセージを消してください。",view=bingo_button(),ephemeral=True)
+    else:
+        await interaction.response.send_message("コマンドがおかしいよ",ephemeral=True)
+
+
+@tree.command(name='roll', description='ビンゴの次の数を出します')
 async def notice(interaction: discord.Interaction):
-    fo.printf(interaction.user.name,"did \"/bingo\"")
-    #とりま1~100まで固定
-    num_list=bingo.bingo(1,75)
-    await interaction.response.defer(thinking=True)
-    # await interaction.followup.send(str(num_list).replace(" ",""))
-    user_name=interaction.user.display_name
-    user_name=user_name.replace(" ","")
-    # icon_file="/".join(interaction.user.display_avatar.url.split("/")[4:])
-    bingo_url="[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="+str(num_list)+"&?name="+user_name+"&?icon="+interaction.user.display_avatar.url+")"
-    await interaction.followup.send(bingo_url)
-    await interaction.followup.send(file=discord.File(os.path.join("work.jpg")))
+    fo.printf(interaction.user.name,"did \"/roll\":")
+    num=bingo.roll()
+    print(num)
+    if num==False:
+        await interaction.response.send_message("ビンゴが始まっていません！",ephemeral=False)
+    else:
+        await interaction.response.send_message("#"+str(num))
+
+
 
 @tree.command(name='exit', description='ばいばーい')
 async def exits(interaction: discord.Interaction):
@@ -524,33 +400,6 @@ async def test(interaction:discord.Interaction,char:str):
             await interaction.response.send_message("デコードできません！",ephemeral=True)
             return
     await interaction.response.send_message("その文字をデコードすると"+str(bingo.decode(char))+"です！")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 client.run(token)
