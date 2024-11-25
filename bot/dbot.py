@@ -348,7 +348,7 @@ async def answer(
     input_dice="2d6 で6面ダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ"
 )
 async def test(interaction: discord.Interaction, input_dice: str = "1d100"):
-    rs = dice.do(input_dice)
+    rs = dice.dice.do(input_dice)
     fo.printf(interaction.user.name, 'did "/r":', *rs)
     if rs == False:
         await interaction.response.send_message("入力がおかしいよ")
@@ -373,7 +373,7 @@ async def test(interaction: discord.Interaction, input_dice: str = "1d100"):
 
 @tree.command(name="ohuro", description="おふろのおんどは1d100度！")
 async def test(interaction: discord.Interaction):
-    rs = dice.do("1d100")
+    rs = dice.dice.do("1d100")
     fo.printf(interaction.user.name, 'did "/ohuro":', *rs)
     if rs == False:
         await interaction.response.send_message("入力がおかしいよ")
@@ -387,7 +387,7 @@ async def test(interaction: discord.Interaction):
     input_dice="2d6 で6面シークレットダイスを2回振るよ、後ろに+-*/()でかんたんな計算も出来るよ"
 )
 async def test(interaction: discord.Interaction, input_dice: str):
-    rs = dice.do(input_dice)
+    rs = dice.dice.do(input_dice)
     fo.printf(interaction.user.name, 'did "/rs":', *rs)
     if rs == False:
         await interaction.response.send_message("入力がおかしいよ")
