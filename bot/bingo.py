@@ -2,6 +2,7 @@ from PIL import Image,ImageDraw,ImageFont
 import shutil
 import random
 import os
+import base64
 POOL_PATH="pool.txt"
 def readf():
     return open(POOL_PATH,"r").read().split(",")[:-1]
@@ -112,8 +113,27 @@ def bingo(min,max):
     img.save(os.path.join("work.jpg"))
     return card(numlist[::-1])
 
+def encode_url(url):
+    char_list=list(url)
+    binary=[]
+    for i in char_list:
+        char=hex(ord(i))[2:]
+        if len(char)<4:
+            char="0"*(4-len(char))+char
+        binary.append(char)
+    return binary
+
+def decode_url(binary):
+    char_list=[]
+    for i in binary:
+        char=chr(int(i,16))
+        char_list.append(char)
+    return char_list
+
 if __name__=="__main__":
-    print(bingo(1,75))
+    p=encode_url("https://note.nkmk.me/python-chr-ord-unicode-code-point/#unicode-ord")
+    print("".join(p))
+    print(*decode_url(p),sep="")
 
 
 

@@ -488,13 +488,18 @@ async def notice(interaction: discord.Interaction, operation: str = "card"):
         user_name = interaction.user.display_name
         user_name = user_name.replace(" ", "")
         # icon_file="/".join(interaction.user.display_avatar.url.split("/")[4:])
+        avator = interaction.user.display_avatar.url.split("/")
+        avator = avator[4:]
+        avator = "/".join(avator)
+        avator = avator.split(".")[0]
+
         bingo_url = (
             "[ビンゴカードを開く](https://lit-to.github.io/tadabot/index.html?card="
             + str(num_list)
             + "&?name="
             + user_name
             + "&?icon="
-            + interaction.user.display_avatar.url
+            + avator
             + ")"
         )
         await interaction.followup.send(bingo_url)
@@ -504,18 +509,31 @@ async def notice(interaction: discord.Interaction, operation: str = "card"):
         # await interaction.response.send_message(pool)
         # print(pool)
         result = ["\n"]
-        numemoji=["``0``","``1``","``2``","``3``","``4``","``5``","``6``","``7``","``8``","``9``"]
+        numemoji = [
+            "``0``",
+            "``1``",
+            "``2``",
+            "``3``",
+            "``4``",
+            "``5``",
+            "``6``",
+            "``7``",
+            "``8``",
+            "``9``",
+        ]
         for i in range(1, 76):
             if str(i) not in pool:
                 if i < 10:
                     result.append(numemoji[0][:3] + numemoji[i][2:])
                 else:
-                    result.append(numemoji[i//10][:3] + numemoji[i%10][2:])
+                    result.append(numemoji[i // 10][:3] + numemoji[i % 10][2:])
             else:
                 if i < 10:
                     result.append("||" + numemoji[0][:3] + numemoji[i][2:] + "||")
                 else:
-                    result.append("||" + numemoji[i//10][:3]+numemoji[i%10][2:] + "||")
+                    result.append(
+                        "||" + numemoji[i // 10][:3] + numemoji[i % 10][2:] + "||"
+                    )
             result.append(" ")
             if i % 10 == 0:
                 result.append("\n")

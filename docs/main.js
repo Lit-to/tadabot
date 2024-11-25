@@ -244,7 +244,7 @@ function switch_cell(id) {
 }
 
 function set_icon(icon){
-    document.getElementById("icon").src=icon;
+    document.getElementById("icon").src="https://cdn.discordapp.com/avatars/"+icon+".png";
 }
 
 
