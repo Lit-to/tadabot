@@ -71,11 +71,17 @@ def register(numlist):
         printf(str(i))
 
 def get_pool():
-    return readf()
+    try:
+        return readf()
+    except FileNotFoundError:
+        return ["まだ始まっていません！"]
+
 
 def roll():
-    numlist=readf()
-    print(numlist)
+    try:
+        numlist=readf()
+    except FileNotFoundError:
+        return False
     if len(numlist)==0:
         return False
     result=numlist.pop()
