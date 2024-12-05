@@ -10,3 +10,4 @@ key.txt
 bot/__pycache__/
 
 bot/pool.txt
+bot/pool.json

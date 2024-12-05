@@ -2,13 +2,16 @@ from PIL import Image,ImageDraw,ImageFont
 import shutil
 import random
 import os
-POOL_PATH="pool.txt"
+POOL_PATH="pool.json"
 def readf():
-    return open(POOL_PATH,"r").read().split(",")[:-1]
+    file_data=open(POOL_PATH,"r").read().split("\n")
+    return file_data
 def resetf():
     open(POOL_PATH,"w").close()
 def printf(s):
     open(POOL_PATH,"a").write(s+",")
+def addf(s):
+    open(POOL_PATH,"a").write(s+"\n")
 
 def compression(nums:list) ->str:#数をaa~zzまでの文字列に変換し結合後、ランレングス
     result=[]
@@ -70,16 +73,23 @@ def register(numlist):
     for i in numlist:
         printf(str(i))
 
+def set_reach(name,nums):
+    readf()
+    addf(str(name)+" "+str(nums))
+
+
 def get_pool():
     try:
-        return readf()
+        file_data=readf()
+        return file_data[0].split(",")[:-1]
     except FileNotFoundError:
         return ["まだ始まっていません！"]
 
 
 def roll():
     try:
-        numlist=readf()
+        file_data=readf()
+        numlist=file_data[0].split(",")[:-1]
     except FileNotFoundError:
         return False
     if len(numlist)==0:
