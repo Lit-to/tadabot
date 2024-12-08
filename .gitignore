@@ -1,6 +1,8 @@
 *
 !*/
 !*.*
+*.sh
+*.service
 config.txt
 log.txt
 key.txt
