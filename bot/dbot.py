@@ -262,7 +262,7 @@ async def on_voice_state_update(member, before, after):
                 member.display_name
                 + "("
                 + member.name
-                + "が"
+                + ")が"
                 + before.channel.name
                 + "から退出しました"
             )
@@ -271,9 +271,9 @@ async def on_voice_state_update(member, before, after):
                 member.display_name
                 + "("
                 + member.name
-                + "が"
+                + ")が"
                 + after.channel.name
-                + ")に入室しました"
+                + "に入室しました"
             )
 
 
