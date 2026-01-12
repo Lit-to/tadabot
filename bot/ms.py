@@ -12,7 +12,6 @@ def getMsInfo(key, server):
             ["E:\\minecraft\\server\\tkp2026\\start.bat"],
             creationflags=subprocess.CREATE_NEW_CONSOLE,
         )
-        result.append("サーバーを起動中です！少々お待ちください。")
     if key == "True":
         result.append(config[0])
         result.append(config[1])

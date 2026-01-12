@@ -477,6 +477,9 @@ async def notice(
     interaction: discord.Interaction, key: str = "False", server: str = "False"
 ):
     fo.printf(interaction.user.name, 'did "/ms":', key, server)
+    await interaction.response.send_message(
+        "サーバーを起動中です！少々お待ちください。", ephemeral=False
+    )
     await interaction.response.send_message(ms.getMsInfo(key, server), ephemeral=True)
 
 
