@@ -2,11 +2,16 @@ import subprocess
 
 
 def getMsInfo(key, server):
-    subprocess.Popen(["D:\\ssn\\start.bat"])
+    subprocess.Popen(
+        ["D:\\ssn\\start.bat"], creationflags=subprocess.CREATE_NEW_CONSOLE
+    )
     config = open("msConfig.txt", "r", encoding="utf-8").readlines()
     result = []
     if server == "True":
-        subprocess.Popen(["E:\\minecraft\\server\\tkp2026\\start.bat"])
+        subprocess.Popen(
+            ["E:\\minecraft\\server\\tkp2026\\start.bat"],
+            creationflags=subprocess.CREATE_NEW_CONSOLE,
+        )
         result.append("サーバーを起動中です！少々お待ちください。")
     if key == "True":
         result.append(config[0])
