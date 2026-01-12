@@ -1,8 +1,9 @@
 import discord
 from discord import app_commands
-import random, re, bingo, os, dice
+import random, bingo, os, dice
 import nazotoki as nazo
 import fileout as fo
+import ms
 
 
 def is_prime(n):
@@ -470,6 +471,12 @@ async def notice(interaction: discord.Interaction):
     await interaction.response.send_message("ハイ")
 
 
+@tree.command(name="ms", description="マイクラサーバーの情報を表示するよ")
+async def notice(interaction: discord.Interaction):
+    fo.printf(interaction.user.name, 'did "/ms":')
+    await interaction.response.send_message(ms.getMsInfo())
+
+
 @tree.command(name="67", description="そんなぁ！")
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name, 'did "/67":')
@@ -504,18 +511,31 @@ async def notice(interaction: discord.Interaction, operation: str = "card"):
         # await interaction.response.send_message(pool)
         # print(pool)
         result = ["\n"]
-        numemoji=["``0``","``1``","``2``","``3``","``4``","``5``","``6``","``7``","``8``","``9``"]
+        numemoji = [
+            "``0``",
+            "``1``",
+            "``2``",
+            "``3``",
+            "``4``",
+            "``5``",
+            "``6``",
+            "``7``",
+            "``8``",
+            "``9``",
+        ]
         for i in range(1, 76):
             if str(i) not in pool:
                 if i < 10:
                     result.append(numemoji[0][:3] + numemoji[i][2:])
                 else:
-                    result.append(numemoji[i//10][:3] + numemoji[i%10][2:])
+                    result.append(numemoji[i // 10][:3] + numemoji[i % 10][2:])
             else:
                 if i < 10:
                     result.append("||" + numemoji[0][:3] + numemoji[i][2:] + "||")
                 else:
-                    result.append("||" + numemoji[i//10][:3]+numemoji[i%10][2:] + "||")
+                    result.append(
+                        "||" + numemoji[i // 10][:3] + numemoji[i % 10][2:] + "||"
+                    )
             result.append(" ")
             if i % 10 == 0:
                 result.append("\n")

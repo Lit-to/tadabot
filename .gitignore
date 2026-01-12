@@ -4,6 +4,7 @@
 config.txt
 log.txt
 key.txt
+msConfig.txt
 *.jpg
 !bingo.jpg
 *.csv
