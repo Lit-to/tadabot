@@ -1,13 +1,12 @@
 import subprocess, sys
 
 
-def getMsInfo():
-    option = ""
-    if 1 < len(sys.argv):
-        option = sys.argv[1]
+def getMsInfo(key, server):
     subprocess.Popen(["D:\\ssn\\start.bat"])
     config = open("msConfig.txt", "r").readlines()
-    if option == "key":
+    if key == "True":
         print("\n".join(config))
     else:
         print(config[0])
+    if server == "True":
+        subprocess.Popen(["E:\\minecraft\\server\\tkp2026\\start.bat"])
