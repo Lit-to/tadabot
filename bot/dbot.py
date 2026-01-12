@@ -478,9 +478,10 @@ async def notice(
 ):
     fo.printf(interaction.user.name, 'did "/ms":', key, server)
     await interaction.response.send_message(ms.getMsInfo(key, server), ephemeral=True)
-    await interaction.followup.send(
-        "サーバーを起動中です！少々お待ちください。", ephemeral=False
-    )
+    if server == "true":
+        await interaction.followup.send(
+            "サーバーを起動中です！少々お待ちください。", ephemeral=False
+        )
 
 
 @tree.command(name="67", description="そんなぁ！")
