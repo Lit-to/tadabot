@@ -474,7 +474,7 @@ async def notice(interaction: discord.Interaction):
 @tree.command(name="ms", description="マイクラサーバーの情報を表示するよ")
 async def notice(interaction: discord.Interaction):
     fo.printf(interaction.user.name, 'did "/ms":')
-    await interaction.response.send_message(ms.getMsInfo())
+    await interaction.response.send_message(ms.getMsInfo(), ephemeral=True)
 
 
 @tree.command(name="67", description="そんなぁ！")
