@@ -471,14 +471,17 @@ async def notice(interaction: discord.Interaction):
     await interaction.response.send_message("ハイ")
 
 
-@tree.command(name="ms", description="マイクラサーバーの情報を表示するよ")
+@tree.command(
+    name="ip",
+    description="マイクラサーバーの情報を表示するよ、場合によってはサーバー起動するよ",
+)
 @app_commands.describe(key="true/false", server="true/false")
 async def notice(
     interaction: discord.Interaction, key: str = "False", server: str = "False"
 ):
-    fo.printf(interaction.user.name, 'did "/ms":', key, server)
+    fo.printf(interaction.user.name, 'did "/ip":', key, server)
     await interaction.response.defer(thinking=True)
-    if server == "true":
+    if server == "True":
         await interaction.followup.send(
             "サーバーを起動中です！少々お待ちください。", ephemeral=True
         )
