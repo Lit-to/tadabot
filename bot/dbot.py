@@ -480,11 +480,11 @@ async def notice(
     await interaction.response.defer(thinking=True)
     if server == "true":
         await interaction.followup.send(
-            "サーバーを起動中です！少々お待ちください。", ephemeral=False
+            "サーバーを起動中です！少々お待ちください。", ephemeral=True
         )
     else:
         await interaction.followup.send(
-            "IP情報を収集中です！少々お待ちください。", ephemeral=False
+            "IP情報を収集中です！少々お待ちください。", ephemeral=True
         )
     await interaction.followup.send(ms.getMsInfo(key, server), ephemeral=True)
 
