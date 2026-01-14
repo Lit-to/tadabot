@@ -477,11 +477,16 @@ async def notice(
     interaction: discord.Interaction, key: str = "False", server: str = "False"
 ):
     fo.printf(interaction.user.name, 'did "/ms":', key, server)
-    await interaction.response.send_message(ms.getMsInfo(key, server), ephemeral=True)
+    await interaction.response.defer(thinking=True)
     if server == "true":
         await interaction.followup.send(
             "サーバーを起動中です！少々お待ちください。", ephemeral=False
         )
+    else:
+        await interaction.followup.send(
+            "IP情報を収集中です！少々お待ちください。", ephemeral=False
+        )
+    await interaction.followup.send(ms.getMsInfo(key, server), ephemeral=True)
 
 
 @tree.command(name="67", description="そんなぁ！")
