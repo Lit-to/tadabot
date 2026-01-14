@@ -480,7 +480,7 @@ async def notice(
     interaction: discord.Interaction, key: str = "False", server: str = "False"
 ):
     fo.printf(interaction.user.name, 'did "/ip":', key, server)
-    await interaction.response.defer(thinking=True)
+    await interaction.response.defer(thinking=True, ephemeral=True)
     if server == "True":
         await interaction.followup.send(
             "サーバーを起動中です！少々お待ちください。", ephemeral=True
